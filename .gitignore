@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Streamlit / app runtime
+.cache/
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db

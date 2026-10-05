@@ -1,0 +1,8 @@
+* text=auto eol=lf
+
+# Keep generated/local files out of the repository, even if a rule above
+# would otherwise match them.
+__pycache__/  linguist-generated=true
+*.py[cod]     linguist-generated=true
+*.mp3         linguist-vendored
+.cache/       linguist-vendored

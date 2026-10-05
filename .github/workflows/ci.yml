@@ -1,0 +1,63 @@
+name: CI
+
+# Runs the ReadExpress-CoT test suite on every push and pull request.
+#
+# The workflow installs requirements-ci.txt, a deliberately lean subset:
+# openai-whisper and sounddevice are ~2 GB and are only needed for the
+# optional speech-input feature, which the tests never exercise (src.speech
+# imports them lazily and degrades gracefully when they are missing).
+# Installing them here would cost minutes per run for no extra coverage.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: pytest on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows is included on purpose: the speech path and the file paths
+        # in this project are not platform-neutral.
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.10']
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ci.txt
+
+      - name: Byte-compile every module
+        # Fast gate: catches a syntax error before the slower test run, and
+        # proves app.py imports cleanly on this interpreter.
+        run: python -m compileall -q app.py src tests
+
+      - name: Run the test suite
+        run: python -m pytest tests -q --tb=short
+
+      - name: Verify the content library self-check
+        # src/content.py asserts its own invariants on import; this makes that
+        # a reported CI signal instead of a silently skipped check.
+        run: python -c "import src.content as c; print(len(c.ARTICLES), 'articles, each with', len(c.build_lesson(c.ARTICLES[0].id)), 'questions')"

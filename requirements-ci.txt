@@ -1,0 +1,10 @@
+# Lean dependency set for CI (GitHub Actions).
+#
+# The full requirements.txt includes openai-whisper and sounddevice, which
+# weigh roughly 2 GB combined. They power the optional speech-input feature
+# only, and the test suite never touches them, so CI installs this subset
+# instead and stays fast.
+
+streamlit>=1.32
+PyYAML>=6.0
+pytest>=7.4
