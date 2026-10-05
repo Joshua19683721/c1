@@ -24,6 +24,8 @@ CONTRACT = PROJECT_ROOT / 'tests' / 'site' / 'run_contract.mjs'
 APP_HARNESS = PROJECT_ROOT / 'tests' / 'site' / 'run_app.mjs'
 
 sys.path.insert(0, str(PROJECT_ROOT))
+from src import content  # noqa: E402
+from src.categories import CATEGORY_ORDER  # noqa: E402
 from tools.export_site_data import build_payload  # noqa: E402
 
 requires_node = pytest.mark.skipif(
@@ -70,7 +72,8 @@ def test_articles_json_matches_the_python_content_library():
 
 def test_articles_json_carries_every_article_and_question():
     data = json.loads(ARTICLES_JSON.read_text(encoding='utf-8'))
-    assert len(data['articles']) == 5
+    assert len(data['articles']) == len(content.ARTICLES)
+    assert len(data['categories']) == len(CATEGORY_ORDER)
     for article in data['articles']:
         assert article['text'].strip()
         assert len(article['questions']) == 10
@@ -116,9 +119,10 @@ def test_javascript_parser_meets_the_same_contract_as_python():
         f'contract failures:\n{result.stdout}\n{result.stderr}'
     )
     summary = json.loads(result.stdout)
-    assert summary['articles'] == 5
-    assert summary['questions'] == 50
-    assert summary['verbatimChecked'] == 200
+    assert summary['articles'] == len(content.ARTICLES)
+    assert summary['questions'] == 10 * len(content.ARTICLES)
+    # 4 options per question, every one checked as a round trip.
+    assert summary['verbatimChecked'] == 40 * len(content.ARTICLES)
     assert summary['verbatimWrong'] == 0
     assert summary['collapsed'] == 0
     assert summary['negativeAccepted'] == 0

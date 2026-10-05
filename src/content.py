@@ -29,10 +29,14 @@ from dataclasses import dataclass, replace
 from hashlib import sha256
 from importlib import import_module
 from random import Random
+from typing import Sequence
 
 from .categories import CATEGORY_ORDER
 
 __all__ = [
+    "Q",
+    "article",
+    "q",
     "Question",
     "Article",
     "ARTICLES",
@@ -100,6 +104,65 @@ class Article:
     def __len__(self) -> int:
         return len(self.questions)
 
+
+def Q(
+    skill: str,
+    stem: str,
+    options: str,
+    correct_index: int,
+    hint: str,
+    explanation: str,
+    gist: str,
+) -> tuple[str, str, str, int, str, str, str]:
+    """One question, written on a single line.
+
+    Options are packed into one pipe-separated string. A little cryptic to read,
+    but this library is heading for thousands of questions and the expanded form
+    costs roughly twice as much to write and review. The expanded q() below stays
+    available for when readability matters more than volume.
+
+    Question numbers are assigned by article(), so they cannot drift out of
+    order as questions are added.
+    """
+    parts = tuple(part.strip() for part in options.split('|'))
+    if len(parts) != OPTION_COUNT:
+        raise ValueError(
+            f'expected {OPTION_COUNT} options, got {len(parts)}: {options!r}'
+        )
+    if len(set(parts)) != OPTION_COUNT:
+        raise ValueError(f'duplicate option: {options!r}')
+    if not 0 <= correct_index < OPTION_COUNT:
+        raise ValueError(f'correct_index out of range: {options!r}')
+    return (skill, stem, options, correct_index, hint, explanation, gist)
+
+
+def article(
+    id: str,
+    title: str,
+    author: str,
+    genre: str,
+    text: str,
+    questions: Sequence[tuple[str, str, str, int, str, str, str]],
+    category: str,
+) -> Article:
+    """Build an Article from the compact Q() form.
+
+    Question numbers are assigned here rather than written by hand, which is one
+    fewer thing to get wrong in a 4,000-question library.
+    """
+    built = tuple(
+        q(
+            number, skill, stem,
+            tuple(part.strip() for part in packed.split('|')),
+            hint, explanation, gist, correct_index,
+        )
+        for number, (skill, stem, packed, correct_index, hint, explanation, gist)
+        in enumerate(questions, start=1)
+    )
+    return Article(
+        id=id, title=title, author=author, genre=genre, text=text,
+        questions=built, category=category,
+    )
 
 def q(
     number: int,
