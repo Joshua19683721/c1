@@ -112,5 +112,41 @@ h2.section { font-size: 1.3rem; margin: 24px 0 12px; }
 .meta { font-size: .82rem; color: var(--muted); }
 
 .tts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+/* --- library browser --- */
+.cats { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 2px; }
+.cat {
+  font: inherit; font-size: .92rem; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: #fff; color: var(--muted);
+}
+.cat:hover { border-color: var(--morandi); color: var(--morandi-dark); }
+.cat[aria-pressed="true"] { background: var(--morandi); border-color: var(--morandi); color: #fff; font-weight: 600; }
+.cat .count { opacity: .7; font-size: .82em; margin-left: 4px; }
+.cat.empty { opacity: .55; }
+
+.articles {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px; margin: 4px 0 18px;
+}
+.article-card {
+  text-align: left; font: inherit; cursor: pointer; padding: 12px 14px;
+  border-radius: 14px; border: 2px solid #DCE3EB; background: #fff; color: var(--ink);
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+.article-card:hover { border-color: var(--morandi); box-shadow: 0 3px 10px rgba(125,148,173,.2); }
+.article-card[aria-current="true"] { border-color: var(--morandi-dark); background: var(--morandi-soft); }
+.article-card .name { font-weight: 700; font-size: 1rem; }
+.article-card .who { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.articles .empty-note { grid-column: 1 / -1; color: var(--muted); font-size: .92rem; padding: 14px 0; }
+
+/* --- 解析卡：答錯時說明為什麼 --- */
+.explain {
+  background: #EEF3F8; border: 1px solid #D6E0EC; border-left: 5px solid var(--morandi);
+  border-radius: 0 14px 14px 0; padding: 14px 18px; margin-top: 12px;
+}
+.explain h4 { margin: 0 0 6px; font-size: 1rem; color: var(--morandi-dark); }
+.explain .answer { font-weight: 700; margin-bottom: 6px; }
+.explain .why { line-height: 1.9; }
+.explain .row { margin-top: 12px; }
+
 .footer { color: var(--muted); font-size: .85rem; text-align: center; padding: 30px 0 0; }
 .hidden { display: none !important; }

@@ -15,7 +15,14 @@ from __future__ import annotations
 import streamlit as st
 
 from src import ui
-from src.content import ARTICLES, TOTAL_QUESTIONS, build_lesson
+from src.categories import CATEGORIES, CATEGORY_ORDER
+from src.content import (
+    ARTICLES,
+    TOTAL_QUESTIONS,
+    articles_in_category,
+    build_lesson,
+    get_article,
+)
 from src.cot import generate_reflection
 from src.evaluator import EvaluationResult, evaluate_answer
 from src.llm import default_client
@@ -36,13 +43,35 @@ st.set_page_config(
 
 ui.inject_css()
 
+# Derived rather than hand-maintained: at 200 articles a literal table here
+# is another list that drifts out of date the moment an article is added.
 ARTICLE_LABELS = {
-    'beiying': '《背影》朱自清・抒情記敘',
-    'chibing': '《吃冰的滋味》古蒙仁・記敘散文',
-    'kongchengji': '《空城計》羅貫中・古典白話',
-    'shihu': '《臺灣的海洋文化與石滬》・在地文化',
-    'fanqie': '《番茄紅了，醫生的臉就綠了》・科普閱讀',
+    article.id: (
+        f'{article.display_title}{article.author}・{article.genre}'
+    )
+    for article in ARTICLES
 }
+
+
+# ---------------------------------------------------------------------------
+# Category helpers
+# ---------------------------------------------------------------------------
+
+def category_label(slug: str) -> str:
+    """'📜 記敘與抒情（2 篇）' — the label a teacher sees in the picker."""
+    category = CATEGORIES[slug]
+    return (
+        f'{category.icon} {category.label}'
+        f'（{len(articles_in_category(slug))} 篇）'
+    )
+
+
+def _category_index(slugs: list[str]) -> int:
+    """Keep the picker on the category of whatever article is already open."""
+    article = get_article(st.session_state.get('rx_article_id', ''))
+    if article is not None and article.category in slugs:
+        return slugs.index(article.category)
+    return 0
 
 
 # ---------------------------------------------------------------------------
@@ -52,8 +81,11 @@ ARTICLE_LABELS = {
 def reset_lesson(article_id: str) -> None:
     st.session_state.rx_article_id = article_id
     st.session_state.rx_q = 0
-    st.session_state.rx_answers = []
-    st.session_state.rx_correct = []
+    # Pre-sized: submit_answer assigns by question index so a retry cannot
+    # desynchronise the arrays, and Python lists do not auto-extend the way a
+    # JavaScript array would.
+    st.session_state.rx_answers = [''] * TOTAL_QUESTIONS
+    st.session_state.rx_correct = [False] * TOTAL_QUESTIONS
     st.session_state.rx_last = None
     st.session_state.rx_suggestion = None
     st.session_state.rx_reflection = None
@@ -69,7 +101,12 @@ def current_lesson():
 
 
 def submit_answer(raw_input: str) -> None:
-    """Resolve an answer, record it, and advance when we are sure."""
+    """Resolve an answer and record it.
+
+    Deliberately does *not* advance. The explanation belongs to the question
+    that was just answered, so the lesson waits for an explicit 下一題. Advancing
+    inside here would render the next question's answer against this verdict.
+    """
     lesson = current_lesson()
     index = st.session_state.rx_q
     if index >= len(lesson.questions):
@@ -88,12 +125,29 @@ def submit_answer(raw_input: str) -> None:
         st.session_state.rx_suggestion = result.suggestion
         return
 
-    st.session_state.rx_answers.append(question.options[result.index])
-    st.session_state.rx_correct.append(bool(result.is_correct))
+    # Index assignment rather than append, so a retry cannot desynchronise the
+    # arrays from the question numbers.
+    st.session_state.rx_answers[index] = question.options[result.index]
+    st.session_state.rx_correct[index] = bool(result.is_correct)
     st.session_state.rx_suggestion = None
     st.session_state.rx_input = ''
-    st.session_state.rx_q = index + 1
 
+
+def retry_question() -> None:
+    """Clear the verdict so the same question can be attempted again."""
+    st.session_state.rx_last = None
+    st.session_state.rx_suggestion = None
+    st.session_state.rx_input = ''
+
+
+def next_question() -> None:
+    """Advance, generating the reflection once the ladder is complete."""
+    st.session_state.rx_last = None
+    st.session_state.rx_suggestion = None
+    st.session_state.rx_input = ''
+    st.session_state.rx_q += 1
+
+    lesson = current_lesson()
     if st.session_state.rx_q >= len(lesson.questions):
         st.session_state.rx_reflection = generate_reflection(
             lesson,
@@ -105,8 +159,8 @@ def submit_answer(raw_input: str) -> None:
 defaults = {
     'rx_article_id': ARTICLES[0].id,
     'rx_q': 0,
-    'rx_answers': [],
-    'rx_correct': [],
+    'rx_answers': [''] * TOTAL_QUESTIONS,
+    'rx_correct': [False] * TOTAL_QUESTIONS,
     'rx_last': None,
     'rx_suggestion': None,
     'rx_reflection': None,
@@ -128,12 +182,27 @@ for key, value in defaults.items():
 with st.sidebar:
     st.markdown('#### ⚙️ 課堂設定')
 
-    ids = [a.id for a in ARTICLES]
+    slugs = [s for s in CATEGORY_ORDER if articles_in_category(s)]
+    slug = st.selectbox(
+        '文章分類',
+        options=slugs,
+        format_func=category_label,
+        index=_category_index(slugs),
+        key='rx_category_picker',
+    )
+    st.caption(CATEGORIES[slug].blurb)
+
+    in_category = articles_in_category(slug)
+    ids = [a.id for a in in_category]
     picked = st.selectbox(
         '選擇文章',
         options=ids,
         format_func=lambda aid: ARTICLE_LABELS[aid],
-        index=ids.index(st.session_state.rx_article_id),
+        index=(
+            ids.index(st.session_state.rx_article_id)
+            if st.session_state.rx_article_id in ids
+            else 0
+        ),
         key='rx_article_picker',
     )
     if picked != st.session_state.rx_article_id:
@@ -165,7 +234,7 @@ with st.sidebar:
         )
 
     st.divider()
-    if st.button('🔄 重新開始這篇文章', use_container_width=True):
+    if st.button('🔄 重新開始這篇文章', use_container_width=True, key='rx_restart'):
         reset_lesson(st.session_state.rx_article_id)
         st.rerun()
 
@@ -247,7 +316,7 @@ with quiz_col:
         wrong_rows = [
             (i + 1, st.session_state.rx_answers[i])
             for i, ok in enumerate(st.session_state.rx_correct)
-            if not ok
+            if not ok and st.session_state.rx_answers[i]
         ]
         if wrong_rows:
             with st.expander(f'看看答錯的 {len(wrong_rows)} 題'):
@@ -259,6 +328,7 @@ with quiz_col:
             '\n'.join(
                 f'{i + 1}. {text}'
                 for i, text in enumerate(st.session_state.rx_answers)
+                if text
             )
         )
         if st.button('🔄 再讀一次這篇文章', key='rx_again'):
@@ -316,6 +386,53 @@ with quiz_col:
                         submit_answer(str(suggestion + 1))
                         st.rerun()
                     st.caption('不對的話，請再說一次，或直接按上面的選項。')
+
+        # --- 解析卡 -------------------------------------------------------
+        # The explanation belongs to the question just answered, so it stays on
+        # screen with that question and the lesson waits for an explicit 下一題.
+        if last is not None and last.resolved:
+            ok = bool(last.is_correct)
+            heading = '📖 為什麼是這個答案？' if ok else '📖 正確答案與解析'
+            answer_line = (
+                f'第 {question.number} 題正確答案是：{question.correct_text}'
+                if ok
+                else (
+                    f'第 {question.number} 題正確答案是：'
+                    f'第 {question.display_number} 個選項　{question.correct_text}'
+                )
+            )
+            st.markdown(
+                '<div class="rx-step">'
+                f'<div class="rx-step-title">{heading}</div>'
+                f'<div class="rx-step-body">{answer_line}</div>'
+                f'<div class="rx-step-body">{question.explanation}</div>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+
+            cols = st.columns(2)
+            if not ok:
+                with cols[0]:
+                    if st.button(
+                        '🔄 再試一次', key='rx_retry', use_container_width=True
+                    ):
+                        retry_question()
+                        st.rerun()
+            with cols[-1]:
+                label = '➡️ 下一題' if ok else '➡️ 懂了，看下一題'
+                if st.button(
+                    label,
+                    key='rx_next',
+                    use_container_width=True,
+                    type='primary' if ok else 'secondary',
+                ):
+                    if not ok:
+                        # The explanation was just shown, so the correct answer
+                        # is what the student carries into the reflection.
+                        st.session_state.rx_answers[position] = question.correct_text
+                        st.session_state.rx_correct[position] = True
+                    next_question()
+                    st.rerun()
 
         # --- 雙輸入控制列 --------------------------------------------------
         st.markdown('###### ⌨️ 打字輸入　/　🎤 語音輸入')

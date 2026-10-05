@@ -27,6 +27,8 @@ const $ = (id) => document.getElementById(id);
 
 const state = {
   articles: [],
+  categories: [],
+  category: null,
   articleId: null,
   index: 0,
   answers: [],
@@ -45,14 +47,13 @@ function article() {
 function questions() {
   const art = article();
   return art.questions.map((q) => {
-    if (!state.shuffle) {
-      return { ...q, options: q.options, correctIndex: q.sourceCorrectIndex };
-    }
-    return {
-      ...q,
-      options: q.shuffleOrder.map((i) => q.options[i]),
-      correctIndex: q.shuffleOrder.indexOf(q.sourceCorrectIndex),
-    };
+    const shown = state.shuffle
+      ? q.shuffleOrder.map((i) => q.options[i])
+      : q.options;
+    const correctIndex = state.shuffle
+      ? q.shuffleOrder.indexOf(q.sourceCorrectIndex)
+      : q.sourceCorrectIndex;
+    return { ...q, options: shown, correctIndex, correctText: shown[correctIndex] };
   });
 }
 
@@ -115,10 +116,39 @@ function submitAnswer(raw) {
     feedback: feedbackFor(question, isCorrect),
     note: NUMBER_HOWS.includes(resolvedHow) ? '\u5bec\u5bb9\u6578\u5b57\u89e3\u6790' : '\u672c\u5730\u5bec\u5bb9\u6bd4\u5c0d',
   };
-  state.answers.push(question.options[resolvedIndex]);
-  state.correct.push(isCorrect);
+  state.answers[state.index] = question.options[resolvedIndex];
+  state.correct[state.index] = isCorrect;
   state.suggestion = null;
+  $('typed').value = '';
+
+  // Neither a right nor a wrong answer advances on its own. The explanation
+  // belongs to the question that was just answered, so it has to stay on screen
+  // with that question; advancing first rendered the *next* question's answer
+  // against the previous question's verdict. Advancing is an explicit choice.
+  //
+  // Index assignment (rather than push) keeps the arrays aligned across a retry.
+  render();
+}
+
+function nextQuestion() {
+  state.last = null;
+  state.suggestion = null;
+  $('typed').value = '';
   state.index += 1;
+  render();
+}
+
+// Skipping after a wrong answer: the explanation was just shown, so the correct
+// answer is what the student should carry into the reflection.
+function acceptAndNext(question) {
+  state.answers[state.index] = question.correctText;
+  state.correct[state.index] = true;
+  nextQuestion();
+}
+
+function retryQuestion() {
+  state.last = null;
+  state.suggestion = null;
   $('typed').value = '';
   render();
 }
@@ -194,6 +224,70 @@ function setupMic() {
   });
 }
 
+
+// --- library browser --------------------------------------------------------
+
+function currentCategory() {
+  return state.categories.find((c) => c.slug === state.category);
+}
+
+function articlesIn(slug) {
+  return state.articles.filter((a) => a.category === slug);
+}
+
+function renderCategories() {
+  const host = $('categories');
+  host.innerHTML = '';
+  for (const category of state.categories) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = category.count ? 'cat' : 'cat empty';
+    button.setAttribute('aria-pressed', String(category.slug === state.category));
+    button.innerHTML = `${category.icon} ${escapeHtml(category.label)}`
+      + `<span class="count">${category.count}</span>`;
+    button.addEventListener('click', () => {
+      state.category = category.slug;
+      renderCategories();
+      renderArticleGrid();
+    });
+    host.appendChild(button);
+  }
+  const current = currentCategory();
+  $('categoryBlurb').textContent = current ? current.blurb : '';
+}
+
+function renderArticleGrid() {
+  const host = $('articleGrid');
+  host.innerHTML = '';
+  const list = articlesIn(state.category);
+  if (!list.length) {
+    const note = document.createElement('p');
+    note.className = 'empty-note';
+    note.textContent = '這個類別還在補充文章，先看看其他類別吧。';
+    host.appendChild(note);
+    return;
+  }
+  for (const art of list) {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'article-card';
+    card.setAttribute('role', 'listitem');
+    if (art.id === state.articleId) card.setAttribute('aria-current', 'true');
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = art.displayTitle;
+    const who = document.createElement('div');
+    who.className = 'who';
+    who.textContent = `${art.author}・${art.genre}`;
+    card.append(name, who);
+    card.addEventListener('click', () => {
+      state.articleId = art.id;
+      restart();
+    });
+    host.appendChild(card);
+  }
+}
+
 // --- rendering --------------------------------------------------------------
 
 function render() {
@@ -240,7 +334,57 @@ function render() {
   });
 
   renderFeedback(question);
+  renderExplanation(question);
   document.querySelector('.inputs').classList.remove('hidden');
+}
+
+// The 解析卡: why the correct option is correct. Shown after every attempt —
+// after a correct answer it deepens the learning, after a wrong one it is the
+// explanation the student came for.
+function renderExplanation(question) {
+  const host = $('explain');
+  host.innerHTML = '';
+  const last = state.last;
+  if (!last || last.index === null) return;
+
+  const box = document.createElement('div');
+  box.className = 'explain';
+
+  const title = document.createElement('h4');
+  title.textContent = last.isCorrect ? '📖 為什麼是這個答案？' : '📖 正確答案與解析';
+
+  const answer = document.createElement('div');
+  answer.className = 'answer';
+  answer.textContent = `第 ${question.number} 題正確答案是：${last.isCorrect ? '' : `第 ${question.correctIndex + 1} 個選項　`}${question.correctText}`;
+
+  const why = document.createElement('div');
+  why.className = 'why';
+  why.textContent = question.explanation || '（這題暫時沒有解析）';
+
+  box.append(title, answer, why);
+
+  const row = document.createElement('div');
+  row.className = 'row';
+  if (!last.isCorrect) {
+    const again = document.createElement('button');
+    again.type = 'button';
+    again.className = 'btn primary';
+    again.textContent = '🔄 再試一次';
+    again.addEventListener('click', retryQuestion);
+    row.appendChild(again);
+  }
+  const onwards = document.createElement('button');
+  onwards.type = 'button';
+  onwards.className = last.isCorrect ? 'btn primary' : 'btn';
+  onwards.textContent = last.isCorrect ? '➡️ 下一題' : '➡️ 懂了，看下一題';
+  onwards.addEventListener('click', () => {
+    if (last.isCorrect) nextQuestion();
+    else acceptAndNext(question);
+  });
+  row.appendChild(onwards);
+  box.appendChild(row);
+
+  host.appendChild(box);
 }
 
 function renderFeedback(question) {
@@ -342,6 +486,8 @@ function restart() {
   state.last = null;
   state.suggestion = null;
   $('typed').value = '';
+  $('explain').innerHTML = '';
+  renderArticleGrid();
   render();
 }
 
@@ -351,26 +497,25 @@ async function boot() {
   try {
     const response = await fetch('data/articles.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    state.articles = (await response.json()).articles;
-    state.articleId = state.articles[0].id;
+    const payload = await response.json();
+    state.articles = payload.articles;
+    state.categories = payload.categories || [];
+    // Land on a category that actually has articles, so the grid is never
+    // showing an empty shelf on first load.
+    const firstPopulated = state.categories.find((c) => c.count > 0);
+    state.category = firstPopulated ? firstPopulated.slug : null;
+    state.articleId = firstPopulated
+      ? articlesIn(firstPopulated.slug)[0].id
+      : state.articles[0].id;
+    $('libraryCount').textContent = `共 ${state.articles.length} 篇文章、${state.articles.length * 10} 道題`;
   } catch (err) {
     $('subtitle').textContent =
       `載入文章失敗：${err.message}。請確認 data/articles.json 存在。`;
     return;
   }
 
-  const select = $('article');
-  for (const art of state.articles) {
-    const option = document.createElement('option');
-    option.value = art.id;
-    option.textContent = `${art.displayTitle}${art.author}\u30fb${art.genre}`;
-    select.appendChild(option);
-  }
-  select.value = state.articleId;
-  select.addEventListener('change', () => {
-    state.articleId = select.value;
-    restart();
-  });
+  renderCategories();
+  renderArticleGrid();
 
   $('shuffle').addEventListener('change', (e) => {
     state.shuffle = e.target.checked;

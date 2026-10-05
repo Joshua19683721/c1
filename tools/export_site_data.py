@@ -28,6 +28,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import content  # noqa: E402
+from src.categories import CATEGORIES, CATEGORY_ORDER  # noqa: E402
 
 OUTPUT_PATH = PROJECT_ROOT / "site" / "data" / "articles.json"
 
@@ -47,6 +48,7 @@ def _shuffle_order(article_id: str, number: int) -> list[int]:
 def build_payload() -> dict:
     articles = []
     for article in content.ARTICLES:
+        category = CATEGORIES[article.category]
         questions = []
         for question in article.questions:
             questions.append(
@@ -58,6 +60,7 @@ def build_payload() -> dict:
                     "sourceCorrectIndex": question.correct_index,
                     "shuffleOrder": _shuffle_order(article.id, question.number),
                     "hint": question.hint,
+                    "explanation": question.explanation,
                     "gist": question.gist,
                 }
             )
@@ -68,14 +71,28 @@ def build_payload() -> dict:
                 "displayTitle": article.display_title,
                 "author": article.author,
                 "genre": article.genre,
+                "category": article.category,
+                "categoryLabel": category.label,
+                "categoryIcon": category.icon,
+                "categoryBlurb": category.blurb,
                 "text": article.text,
                 "questions": questions,
             }
         )
     return {
-        "generatedFrom": "src/content.py",
+        "generatedFrom": "src/categories/*.py",
         "optionCount": content.OPTION_COUNT,
         "questionCount": content.TOTAL_QUESTIONS,
+        "categories": [
+            {
+                "slug": slug,
+                "label": CATEGORIES[slug].label,
+                "icon": CATEGORIES[slug].icon,
+                "blurb": CATEGORIES[slug].blurb,
+                "count": len(content.articles_in_category(slug)),
+            }
+            for slug in CATEGORY_ORDER
+        ],
         "articles": articles,
     }
 

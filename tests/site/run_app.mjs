@@ -31,6 +31,7 @@ class StubElement {
     this._text = '';
     this._html = '';
     this.listeners = {};
+    this.attributes = {};
     this.value = '';
     this.disabled = false;
   }
@@ -47,6 +48,9 @@ class StubElement {
   set innerHTML(v) { this._html = String(v); this.children = []; }
   appendChild(child) { this.children.push(child); return child; }
   append(...nodes) { this.children.push(...nodes); }
+  setAttribute(name, value) { this.attributes[name] = String(value); }
+  getAttribute(name) { return this.attributes[name]; }
+
   addEventListener(type, handler) {
     (this.listeners[type] ||= []).push(handler);
   }
@@ -101,22 +105,48 @@ await import(pathToFileURL(join(siteRoot, 'app.js')).href);
 await new Promise((resolve) => setTimeout(resolve, 50));
 
 const optionButtons = () => byId('options').children.filter((c) => c.tagName === 'BUTTON');
+const explanationButtons = () => byId('explain').children
+  .flatMap((card) => card.children)
+  .flatMap((row) => row.children || [])
+  .filter((c) => c.tagName === 'BUTTON');
 
 check(optionButtons().length === 4, `expected 4 option buttons, got ${optionButtons().length}`);
 check(byId('progressText').textContent === '\u7b2c 1 \u984c / \u5171 10 \u984c',
   `progress text is ${JSON.stringify(byId('progressText').textContent)}`);
 check(byId('readText').textContent.length > 50, 'article text not rendered');
 
+// --- category browser ---
+check(byId('categories').children.length === payload.categories.length,
+  `expected ${payload.categories.length} category chips, got ${byId('categories').children.length}`);
+check(byId('articleGrid').children.length > 0, 'article grid is empty on load');
+
+const emptyCategory = payload.categories.find((c) => c.count === 0);
+if (emptyCategory) {
+  const chips = byId('categories').children;
+  chips[payload.categories.indexOf(emptyCategory)].click();
+  check(byId('articleGrid').text.includes('\u9019\u500b\u985e\u5225\u9084\u5728\u88dc\u5145'),
+    'an empty category did not show the placeholder note');
+}
+
+const selectArticle = (article) => {
+  const index = payload.categories.findIndex((c) => c.slug === article.category);
+  byId('categories').children[index].click();
+  const siblings = payload.articles.filter((a) => a.category === article.category);
+  byId('articleGrid').children[siblings.findIndex((a) => a.id === article.id)].click();
+};
+
 // Click through every question using the answer key.
 for (const article of payload.articles) {
-  byId('article').value = article.id;
-  byId('article').dispatch('change');
+  selectArticle(article);
 
   for (const q of article.questions) {
     const buttons = optionButtons();
     check(buttons.length === 4, `${article.id} Q${q.number}: ${buttons.length} buttons`);
     const correctPosition = q.shuffleOrder.indexOf(q.sourceCorrectIndex);
     buttons[correctPosition].click();
+    check(byId('explain').text.includes(q.explanation),
+      `${article.id} Q${q.number}: correct answer showed no explanation`);
+    explanationButtons()[0].click();   // 下一題
   }
 
   check(byId('progressText').textContent === '\u5b8c\u6210 10 \u984c',
@@ -139,11 +169,60 @@ check(byId('progressText').textContent === '\u7b2c 1 \u984c / \u5171 10 \u984c',
   'an unresolved answer advanced the lesson');
 check(byId('feedback').text.length > 0, 'no feedback shown for an unresolved answer');
 
-// A number typed into the box must be accepted.
-byId('typed').value = '1';
-byId('send').click();
+// --- explanation + retry: the feature that turns a wrong answer into learning ---
+// Pin the article first: the loop above ends on the last one, so measuring
+// against articles[0] would silently test a question that is not on screen.
+selectArticle(payload.articles[0]);
+const firstQuestion = payload.articles[0].questions[0];
+const wrongPosition = (firstQuestion.shuffleOrder.indexOf(firstQuestion.sourceCorrectIndex) + 1) % 4;
+optionButtons()[wrongPosition].click();
+
+check(byId('progressText').textContent === '\u7b2c 1 \u984c / \u5171 10 \u984c',
+  'a wrong answer advanced the lesson instead of offering a retry');
+
+const explainText = byId('explain').text;
+check(explainText.includes('\u6b63\u78ba\u7b54\u6848\u8207\u89e3\u6790'),
+  'wrong answer did not show the correct-answer explanation');
+check(explainText.includes(firstQuestion.explanation),
+  'explanation text does not match the question explanation');
+check(explainText.includes('\u518d\u8a66\u4e00\u6b21'), 'no retry button');
+check(explainText.includes('\u61c2\u4e86'), 'no skip button');
+
+const explainButtons = explanationButtons();
+check(explainButtons.length === 2, `expected retry + skip, got ${explainButtons.length} buttons`);
+
+explainButtons[0].click();
+check(byId('explain').text.trim().length === 0, 'retry did not clear the explanation');
+check(byId('progressText').textContent === '\u7b2c 1 \u984c / \u5171 10 \u984c',
+  'retry moved the lesson on');
+
+optionButtons()[wrongPosition].click();
+const skipButtons = explanationButtons();
+check(skipButtons.length === 2, 'retry button vanished on the second attempt');
+skipButtons[1].click();
 check(byId('progressText').textContent === '\u7b2c 2 \u984c / \u5171 10 \u984c',
-  `typed number did not advance: ${JSON.stringify(byId('progressText').textContent)}`);
+  'skip did not advance past the question');
+
+// A correct answer shows its explanation too, and still waits for 下一題 rather
+// than moving on by itself — that is what keeps the explanation attached to the
+// question it belongs to.
+const q2 = payload.articles[0].questions[1];
+optionButtons()[q2.shuffleOrder.indexOf(q2.sourceCorrectIndex)].click();
+check(byId('explain').text.includes(q2.explanation),
+  'a correct answer did not show the explanation');
+check(byId('progressText').textContent === '\u7b2c 2 \u984c / \u5171 10 \u984c',
+  'a correct answer advanced without asking');
+check(explanationButtons().length === 1, 'correct answer should offer only 下一題');
+explanationButtons()[0].click();
+check(byId('progressText').textContent === '\u7b2c 3 \u984c / \u5171 10 \u984c',
+  '下一題 did not advance');
+
+// A number typed into the box must be accepted.
+const q3 = payload.articles[0].questions[2];
+byId('typed').value = String(q3.shuffleOrder.indexOf(q3.sourceCorrectIndex) + 1);
+byId('send').click();
+check(byId('explain').text.includes(q3.explanation),
+  'typed number did not show the explanation');
 
 console.log(JSON.stringify({ failures }, null, 2));
 process.exit(failures.length ? 1 : 0);

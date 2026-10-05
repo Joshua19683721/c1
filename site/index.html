@@ -17,11 +17,15 @@
     <div class="subtitle" id="subtitle">載入中…</div>
 
     <div class="controls">
-      <label for="article">選擇文章</label>
-      <select id="article"></select>
+      <span class="meta">選擇文章</span>
       <label for="shuffle"><input type="checkbox" id="shuffle" checked> 洗牌選項順序</label>
       <button class="btn" id="restart" type="button">🔄 重新開始</button>
+      <span class="meta" id="libraryCount"></span>
     </div>
+
+    <nav class="cats" id="categories" aria-label="文章分類"></nav>
+    <p class="meta" id="categoryBlurb" style="margin:2px 0 10px"></p>
+    <div class="articles" id="articleGrid" role="list"></div>
 
     <div class="progress">
       <div class="bar"><i id="barFill" style="width:0%"></i></div>
@@ -52,6 +56,7 @@
       </div>
 
       <div id="feedback"></div>
+      <div id="explain"></div>
 
       <div class="inputs">
         <h4>⌨️ 打字輸入　/　🎤 語音輸入</h4>

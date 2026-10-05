@@ -2,8 +2,7 @@
 """Drive the real Streamlit app headlessly via AppTest.
 
 This is the only test that exercises app.py end to end — session state,
-button wiring, the reflection section and the reset flow. Everything else
-tests the modules underneath.
+button wiring, the explanation card, the retry flow and the category picker.
 """
 
 from __future__ import annotations
@@ -14,7 +13,8 @@ import pytest
 
 from streamlit.testing.v1 import AppTest
 
-from src.content import build_lesson
+from src.categories import CATEGORIES
+from src.content import articles_in_category, build_lesson, get_article
 
 # Absolute, because Streamlit changed how AppTest resolves relative paths:
 # older versions resolved against the current working directory, newer ones
@@ -38,18 +38,6 @@ def test_app_starts_cleanly(app):
     assert not app.exception
 
 
-def test_sidebar_offers_every_article(app):
-    """AppTest exposes the formatted labels, which is what a teacher actually reads."""
-    labels = list(app.selectbox[0].options)
-    assert labels == [
-        '《背影》朱自清・抒情記敘',
-        '《吃冰的滋味》古蒙仁・記敘散文',
-        '《空城計》羅貫中・古典白話',
-        '《臺灣的海洋文化與石滬》・在地文化',
-        '《番茄紅了，醫生的臉就綠了》・科普閱讀',
-    ]
-
-
 def test_progress_reports_the_current_rung_in_the_specified_format(app):
     """The specification asks for [第 N 題 / 共 10 題]."""
     progress = app.get('progress')
@@ -69,22 +57,60 @@ def test_reading_pane_shows_the_article(app):
     assert '最不能忘記的是他的背影' in markdown
 
 
-@pytest.mark.parametrize('article_id', ['beiying', 'kongchengji'])
-def test_answering_every_option_button_finishes_the_lesson(app, article_id):
-    app.selectbox[0].select(article_id).run()
-    lesson = build_lesson(article_id)
+def test_sidebar_groups_articles_by_category(app):
+    """First selectbox is the category, second is the article within it."""
+    categories = list(app.selectbox[0].options)
+    assert categories, 'no categories offered'
+    for slug in CATEGORIES:
+        if articles_in_category(slug):
+            label = (
+                f"{CATEGORIES[slug].icon} {CATEGORIES[slug].label}"
+                f"（{len(articles_in_category(slug))} 篇）"
+            )
+            assert label in categories
 
+    assert list(app.selectbox[1].options), 'no articles in the first category'
+
+
+def _select_category(app, slug):
+    # set_value takes the option *value* (the slug), not its position — passing
+    # an index stores the int as the widget value and format_func blows up.
+    app.selectbox[0].set_value(slug)
+    app.run()
+    assert not app.exception, app.exception
+
+
+def _select_article(app, article_id):
+    app.selectbox[1].set_value(article_id)
+    app.run()
+    assert not app.exception, app.exception
+
+
+def _play_correct(app, article_id):
+    """Answer every question correctly, clicking 下一題 between them."""
+    _select_category(app, get_article(article_id).category)
+    _select_article(app, article_id)
+
+    lesson = build_lesson(article_id)
     for question in lesson.questions:
         assert not app.exception, app.exception
         key = f'rx_opt_{question.number}_{question.correct_index}'
         assert key in {b.key for b in app.button}, f'missing option button {key}'
         app.button(key=key).click().run()
+        assert not app.exception, app.exception
+        assert 'rx_next' in {b.key for b in app.button}, 'no 下一題 after an answer'
+        app.button(key='rx_next').click().run()
 
     state = app.session_state
     assert state['rx_q'] == 10
     assert len(state['rx_answers']) == 10
     assert all(state['rx_correct'])
     assert not app.exception
+
+
+@pytest.mark.parametrize('article_id', ['beiying', 'kongchengji'])
+def test_answering_every_option_button_finishes_the_lesson(app, article_id):
+    _play_correct(app, article_id)
 
 
 def test_completion_shows_the_puzzle_and_the_three_cot_steps(app):
@@ -99,9 +125,49 @@ def test_completion_shows_the_puzzle_and_the_three_cot_steps(app):
     assert reflection.puzzle.strip()
 
 
-def test_restarting_clears_the_lesson(app):
-    assert app.session_state['rx_q'] == 10
-    app.button(key='rx_again').click().run()
+def test_a_wrong_answer_shows_the_explanation_and_allows_a_retry(app):
+    _select_category(app, 'narrative')
+    _select_article(app, 'beiying')
+
+    question = build_lesson(app.session_state['rx_article_id']).questions[0]
+    wrong = (question.correct_index + 1) % 4
+
+    app.button(key=f'rx_opt_{question.number}_{wrong}').click().run()
+    assert not app.exception, app.exception
+
+    markdown = '\n'.join(m.value for m in app.markdown)
+    assert '正確答案與解析' in markdown
+    assert question.explanation in markdown
+    labels = [b.label for b in app.button]
+    assert '🔄 再試一次' in labels
+    assert '➡️ 懂了，看下一題' in labels
+    assert app.session_state['rx_q'] == 0, 'a wrong answer advanced the lesson'
+
+    app.button(key='rx_retry').click().run()
+    markdown = '\n'.join(m.value for m in app.markdown)
+    assert '正確答案與解析' not in markdown
     assert app.session_state['rx_q'] == 0
-    assert app.session_state['rx_answers'] == []
+
+    app.button(key=f'rx_opt_{question.number}_{question.correct_index}').click().run()
+    markdown = '\n'.join(m.value for m in app.markdown)
+    assert '為什麼是這個答案？' in markdown
+    assert app.session_state['rx_q'] == 0, 'a correct answer advanced on its own'
+    labels = [b.label for b in app.button]
+    assert '➡️ 下一題' in labels
+    assert '🔄 再試一次' not in labels, 'a correct answer should not offer a retry'
+
+    app.button(key='rx_next').click().run()
+    assert app.session_state['rx_q'] == 1
+
+
+def test_restarting_clears_the_lesson(app):
+    # Self-contained: this fixture is module-scoped, so the test must not rely
+    # on where the previous one happened to stop.
+    _select_category(app, 'narrative')
+    _select_article(app, 'beiying')
+    app.button(key='rx_restart').click().run()
+
+    assert app.session_state['rx_q'] == 0
+    assert not any(app.session_state['rx_answers'])
     assert app.session_state['rx_reflection'] is None
+    assert app.session_state['rx_last'] is None
