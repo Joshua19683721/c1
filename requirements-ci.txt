@@ -5,6 +5,6 @@
 # only, and the test suite never touches them, so CI installs this subset
 # instead and stays fast.
 
-streamlit>=1.32
+streamlit>=1.32,<2.0
 PyYAML>=6.0
 pytest>=7.4

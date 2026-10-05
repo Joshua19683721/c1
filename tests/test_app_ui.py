@@ -8,13 +8,19 @@ tests the modules underneath.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from streamlit.testing.v1 import AppTest
 
 from src.content import build_lesson
 
-APP_FILE = 'app.py'
+# Absolute, because Streamlit changed how AppTest resolves relative paths:
+# older versions resolved against the current working directory, newer ones
+# resolve against the *calling file*, which turns 'app.py' into tests/app.py.
+# Caught by CI on streamlit 1.65; an absolute path works on both.
+APP_FILE = str(Path(__file__).resolve().parent.parent / 'app.py')
 
 
 @pytest.fixture(scope='module')

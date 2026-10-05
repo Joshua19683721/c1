@@ -33,6 +33,9 @@ jobs:
         # in this project are not platform-neutral.
         os: [ubuntu-latest, windows-latest]
         python-version: ['3.10']
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -54,10 +57,46 @@ jobs:
         # proves app.py imports cleanly on this interpreter.
         run: python -m compileall -q app.py src tests
 
-      - name: Run the test suite
-        run: python -m pytest tests -q --tb=short
+      - name: Report the environment
+        # Recorded in the run summary so a future failure can be diagnosed
+        # without downloading the (auth-gated) raw logs.
+        run: |
+          {
+            echo "### Environment"
+            echo ""
+            echo "| item | value |"
+            echo "|---|---|"
+            echo "| os | $RUNNER_OS |"
+            echo "| python | $(python -VV | tr -d '\n') |"
+            echo "| streamlit | $(python -c 'import streamlit; print(streamlit.__version__)') |"
+            echo "| PyYAML | $(python -c 'import yaml; print(yaml.__version__)') |"
+            echo "| pytest | $(python -m pytest --version 2>&1 | head -1) |"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify the content library self-check
         # src/content.py asserts its own invariants on import; this makes that
         # a reported CI signal instead of a silently skipped check.
         run: python -c "import src.content as c; print(len(c.ARTICLES), 'articles, each with', len(c.build_lesson(c.ARTICLES[0].id)), 'questions')"
+
+      - name: Run the test suite
+        # The full output is mirrored into the run summary. The raw job log is
+        # behind an authenticated endpoint, so without this a failure is
+        # invisible to anyone who cannot export logs.
+        run: |
+          set -o pipefail
+          python -m pytest tests -v --tb=long 2>&1 | tee pytest-output.txt
+          {
+            echo "### pytest"
+            echo ""
+            echo '```text'
+            cat pytest-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the pytest output
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-output-${{ matrix.os }}
+          path: pytest-output.txt
+          retention-days: 7

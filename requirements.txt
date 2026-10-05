@@ -4,7 +4,9 @@
 # 已驗證環境：Python 3.10 / Streamlit 1.52 / openai 2.12
 
 # --- 核心：介面與設定檔 ---
-streamlit>=1.32
+# 上限鎖在 2.0：AppTest 是測試專用 API，跨大版本曾改動路徑解析行為，
+# 無上限的安裝會在不知情的情況下壞掉 UI 測試。
+streamlit>=1.32,<2.0
 PyYAML>=6.0
 
 # --- Pipeline 1/2 的 LLM 後端（選用）---

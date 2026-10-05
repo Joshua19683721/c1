@@ -158,6 +158,10 @@ python -m pytest tests -q
 149 passed
 ```
 
+> 註：`requirements-ci.txt` 是精簡版（不含 whisper / sounddevice / openai），
+> 因為語音相關套件約 2 GB，而測試從不觸碰它們（`src/speech.py` 為延遲載入並優雅降級）。
+> CI 會在 Ubuntu 與 Windows 兩個平台各跑一次完整測試套件。
+
 涵蓋範圍：
 
 - `test_content.py` — 5 篇 / 50 題結構、洗牌不改變正解、洗牌確實打散位置
