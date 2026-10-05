@@ -39,7 +39,7 @@ CATEGORIES: dict[str, Category] = {
         Category(
             slug="classical",
             label="古典與成語",
-            icon="\U0001F5FF\uFE0F",
+            icon="\U0001F3EE",
             blurb="古文、詩詞與成語故事。訓練字詞理解與古今語意對照。",
         ),
         Category(
