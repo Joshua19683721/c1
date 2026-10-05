@@ -186,18 +186,33 @@ function bigrams(text) {
   return out;
 }
 
+// Four distinct matching characters is roughly where a CJK overlap starts to
+// mean something. Below that, overlaps are discounted so two shared characters
+// out of three cannot masquerade as a confident match.
+const SMALL_OVERLAP = 4;
+
+function overlapDiscount(a, b) {
+  return Math.min(1, Math.min(a.size, b.size) / SMALL_OVERLAP);
+}
+
 function dice(a, b) {
   if (!a.size || !b.size) return 0;
   let shared = 0;
   for (const value of a) if (b.has(value)) shared += 1;
-  return (2 * shared) / (a.size + b.size);
+  return ((2 * shared) / (a.size + b.size)) * overlapDiscount(a, b);
 }
 
+// Discounted when the overlap is tiny: two or three shared characters out of
+// three looks like a 1.0 match but is weak evidence. Without the discount,
+// "今天天氣很好" scored 0.67 against the three-character option "天氣變了" and
+// was accepted. Four distinct matching characters is where a CJK overlap
+// starts to mean something.
 function containment(needle, haystack) {
   if (!needle.size || !haystack.size) return 0;
   let shared = 0;
   for (const value of needle) if (haystack.has(value)) shared += 1;
-  return shared / Math.min(needle.size, haystack.size);
+  const smallest = Math.min(needle.size, haystack.size);
+  return (shared / smallest) * overlapDiscount(needle, haystack);
 }
 
 function contentChars(text) {

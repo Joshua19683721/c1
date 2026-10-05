@@ -227,17 +227,35 @@ def _bigrams(text: str) -> set[str]:
     return {text[i: i + 2] for i in range(len(text) - 1)}
 
 
+#: Four distinct matching characters is roughly where a CJK overlap starts
+#: to mean something. Below that, overlaps are discounted so that two shared
+#: characters out of three cannot masquerade as a confident match.
+SMALL_OVERLAP = 4.0
+
+
+def _overlap_discount(left: set[str], right: set[str]) -> float:
+    return min(1.0, min(len(left), len(right)) / SMALL_OVERLAP)
+
+
 def _dice(left: set[str], right: set[str]) -> float:
     if not left or not right:
         return 0.0
-    return (2.0 * len(left & right)) / (len(left) + len(right))
+    raw = (2.0 * len(left & right)) / (len(left) + len(right))
+    return raw * _overlap_discount(left, right)
 
 
 def _containment(needle: set[str], haystack: set[str]) -> float:
-    """How much of the smaller set is covered by the larger one."""
+    """How much of the smaller set is covered by the larger one, discounted.
+
+    Without the discount "今天天氣很好" scored 0.67 against the three-character
+    option "天氣變了" and was accepted; with it on both metrics the same pair
+    lands at 0.43 and is rejected, while a complete overlap still scores 0.75.
+    """
     if not needle or not haystack:
         return 0.0
-    return len(needle & haystack) / min(len(needle), len(haystack))
+    smallest = min(len(needle), len(haystack))
+    raw = len(needle & haystack) / smallest
+    return raw * _overlap_discount(needle, haystack)
 
 
 def _ratio(left: str, right: str) -> float:

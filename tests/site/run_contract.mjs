@@ -106,6 +106,23 @@ const negatives = [
   '\u6211\u5fd8\u8a18\u4e86', // \u6211\u5fd8\u8a18\u4e86
   '\u9999\u8549\u5f88\u597d\u5403', // \u9999\u8549\u5f88\u597d\u5403
 ];
+// A distractor must never contain one of the negative phrases: an option that
+// says "不知道" makes "我不知道" a *correct* match, which is not a bug in the
+// matcher but a badly-written option. Catch it at authoring time.
+let optionTrap = 0;
+for (const article of data.articles) {
+  for (const q of lessonFor(article)) {
+    for (const option of q.options) {
+      for (const raw of negatives) {
+        if (normalize(option).includes(normalize(raw))) {
+          optionTrap += 1;
+          fail(`${article.id} Q${q.number}: option contains the test phrase ${raw}: ${option}`);
+        }
+      }
+    }
+  }
+}
+
 let negativeAccepted = 0;
 for (const article of data.articles) {
   for (const q of lessonFor(article)) {
@@ -125,6 +142,7 @@ const summary = {
   verbatimWrong,
   collapsed,
   negativeAccepted,
+  optionTrap,
   failures,
 };
 
