@@ -1,0 +1,76 @@
+name: Deploy site to GitHub Pages
+
+# Publishes site/ to https://joshua19683721.github.io/c1
+#
+# Uses the built-in GITHUB_TOKEN, so no personal access token is needed and
+# nothing has to be configured in the repository settings. The first successful
+# run bootstraps the Pages site with "GitHub Actions" as its source.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - src/content.py
+      - tools/export_site_data.py
+      - tests/site/**
+      - tests/test_site.py
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and verify the static site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Regenerate site data from src/content.py
+        run: python tools/export_site_data.py
+
+      - name: Fail if the committed data is stale
+        # The browser must never show different questions from the Streamlit
+        # app, so drift between src/content.py and site/data/articles.json is
+        # a build failure rather than a silent inconsistency.
+        run: python tools/export_site_data.py --check
+
+      - name: Verify the static build
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          python -m pytest tests/test_site.py -q
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

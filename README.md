@@ -6,7 +6,20 @@
 
 ---
 
-## 快速開始
+## 兩種執行方式
+
+| | 網址 | 適合 |
+|:---|:---|:---|
+| **靜態網頁版** | <https://joshua19683721.github.io/c1> | 開瀏覽器就能用，不裝任何東西。可設成平板或電腦的捷徑給學生用。 |
+| **Streamlit 版** | `streamlit run app.py` | 老師在課堂上投放，並可接上 LLM 做更自然的回饋。 |
+
+兩版共用**同一份文章與題目**（`src/content.py`），不會各自漂移。
+
+> 靜態網頁版**不使用任何 API**。瀏覽器頁面無法安全保存金鑰，把金鑰放進公開網址等於公開給所有人，所以網頁版全部在本機運算。
+
+---
+
+## 快速開始（Streamlit 版）
 
 ```bash
 pip install -r requirements.txt
@@ -28,6 +41,48 @@ streamlit run app.py
 export DEEPSEEK_API_KEY="sk-..."
 streamlit run app.py
 ```
+
+---
+
+## 靜態網頁版（GitHub Pages）
+
+```
+site/
+  index.html          介面骨架
+  styles.css          莫蘭迪藍／暖色調（與 src/ui.py 同一套色票）
+  app.js              流程：答題、立即回饋、拼圖、CoT
+  lib/parser.js       src/parser.py 的 JavaScript 版本
+  lib/reflection.js   src/cot.py 本地反思的 JavaScript 版本
+  data/articles.json  由 tools/export_site_data.py 從 src/content.py 產生
+```
+
+**單一資料來源。** `site/data/articles.json` 不是手抄的，而是從 `src/content.py` 產生；
+每題還一併輸出 `shuffleOrder`，讓瀏覽器重現 `build_lesson()` 完全相同的選項順序，
+不必在 JavaScript 裡重新實作 Mersenne Twister。
+
+```bash
+python tools/export_site_data.py            # 重新產生
+python tools/export_site_data.py --check    # CI 檢查是否過期
+```
+
+部署由 `.github/workflows/pages.yml` 自動完成，使用 GitHub 內建的 GITHUB_TOKEN，
+不需要 Personal Access Token，也不用在 repository 設定裡手動指定來源。
+每次部署前會先重新產生資料並跑 `tests/test_site.py`，資料過期或網頁測試失敗就不會上線。
+
+**語音在網頁版反而更好用。** 靜態版改用瀏覽器的 Web Speech API（`SpeechSynthesis` 朗讀、
+`SpeechRecognition` 辨識），不需要 Whisper，也不需要 sounddevice，語音完全在本機完成。
+語音辨識在 Chrome、Edge、Safari 可用；Firefox 沒有這個 API，介面會自動停用按鈕並提示改用打字。
+
+**為什麼兩份解析實作不共用同一份程式碼？** `difflib.SequenceMatcher` 在 JavaScript 沒有對應實作，
+硬要逐一對齊數值只會得到脆弱的等價。真正該保證的是**行為**，所以 `tests/site/run_contract.mjs`
+對 JavaScript 版斷言與 Python 版相同的契約：
+
+- 200 個選項逐字唸出 → 200/200 回到原選項
+- **主動接受錯誤答案：0 次**
+- 無關的回答一律拒絕
+
+`tests/site/run_app.mjs` 再用最小 DOM 樁把真正的 `site/app.js` 跑完 5 篇 × 10 題，
+確保按鈕有接線、元素 id 沒打錯。
 
 ---
 

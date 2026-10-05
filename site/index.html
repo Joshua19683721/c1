@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ReadExpress-CoT 閱讀快線：國小六年級閱讀理解練習，5 篇文章、10 階漸進提問、語音或打字作答、課後思維鏈解析。">
+<meta name="color-scheme" content="light">
+<title>ReadExpress-CoT 閱讀快線（國小素養版）</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2226%22 font-size=%2226%22>📚</text></svg>">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1 class="title">📚 ReadExpress-CoT 閱讀快線 <small>（國小素養版）</small></h1>
+    <div class="subtitle" id="subtitle">載入中…</div>
+
+    <div class="controls">
+      <label for="article">選擇文章</label>
+      <select id="article"></select>
+      <label for="shuffle"><input type="checkbox" id="shuffle" checked> 洗牌選項順序</label>
+      <button class="btn" id="restart" type="button">🔄 重新開始</button>
+    </div>
+
+    <div class="progress">
+      <div class="bar"><i id="barFill" style="width:0%"></i></div>
+      <span id="progressText">第 1 題 / 共 10 題</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section>
+      <div class="card">
+        <h2 class="reading-title" id="readTitle"></h2>
+        <div class="reading-meta" id="readMeta"></div>
+        <div class="reading" id="readText"></div>
+      </div>
+      <div class="tts">
+        <button class="btn" id="ttsPlay" type="button">🔊 播放</button>
+        <button class="btn" id="ttsPause" type="button">⏸ 暫停</button>
+        <button class="btn" id="ttsStop" type="button">⏹ 停止</button>
+        <span class="meta" id="ttsVoice"></span>
+      </div>
+    </section>
+
+    <section>
+      <div class="card" id="quizCard">
+        <span class="skill" id="skill"></span>
+        <p class="question" id="question"></p>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div id="feedback"></div>
+
+      <div class="inputs">
+        <h4>⌨️ 打字輸入　/　🎤 語音輸入</h4>
+        <div class="row">
+          <input type="text" id="typed" placeholder="可以打選項數字（1～4），也可以把答案的內容打出來">
+          <button class="btn primary" id="send" type="button">📤 送出答案</button>
+          <button class="btn" id="mic" type="button">🎤 按住說話</button>
+        </div>
+        <p class="hint" id="micHint">語音辨識在此瀏覽器完成，聲音不會上傳到任何伺服器。</p>
+      </div>
+
+      <div class="card hidden" id="doneCard">
+        <h2 style="margin:0 0 8px" id="doneTitle"></h2>
+        <p class="meta" id="doneMeta"></p>
+      </div>
+    </section>
+  </main>
+
+  <section id="reflection"></section>
+
+  <p class="footer">
+    ReadExpress-CoT 國小素養版 · 純前端版本，資料與解析邏輯與 Streamlit 版共用同一份來源
+  </p>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

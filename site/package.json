@@ -1,0 +1,6 @@
+{
+  "name": "readexpress-cot-site",
+  "private": true,
+  "type": "module",
+  "description": "Static browser build of ReadExpress-CoT. The type=module marker lets Node import the same parser.js the browser loads, so the contract test exercises the shipped file rather than a copy. Browsers ignore this file."
+}
