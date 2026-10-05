@@ -78,6 +78,20 @@ jobs:
         # a reported CI signal instead of a silently skipped check.
         run: python -c "import src.content as c; print(len(c.ARTICLES), 'articles, each with', len(c.build_lesson(c.ARTICLES[0].id)), 'questions')"
 
+      - name: Check the category modules against the house rules
+        # A distractor that is only a word swap of the right answer looks fine
+        # to a reviewer reading the file, but the student answers out loud:
+        # the matcher compares by bigram overlap and would pick either option,
+        # so a correct answer stops being recoverable. The same goes for an
+        # explanation that merely copies an option, a banned phrase the
+        # matcher can latch onto by accident, and latin text the speech
+        # recogniser renders wrong. None of it is visible to the eye, so
+        # tools/check_category.py reads each module with `ast` and reports the
+        # line number and the offending strings. It never imports
+        # src.content, so a category being written elsewhere in the repo
+        # cannot break this step for everyone else.
+        run: python tools/check_category.py
+
       - name: Run the test suite
         # The full output is mirrored into the run summary. The raw job log is
         # behind an authenticated endpoint, so without this a failure is

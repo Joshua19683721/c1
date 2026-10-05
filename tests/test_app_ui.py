@@ -52,6 +52,8 @@ def test_four_big_option_buttons_are_rendered(app):
 
 
 def test_reading_pane_shows_the_article(app):
+    _select_category(app, 'narrative')
+    _select_article(app, 'beiying')
     markdown = '\n'.join(m.value for m in app.markdown)
     assert 'rx-reading' in markdown
     assert '最不能忘記的是他的背影' in markdown

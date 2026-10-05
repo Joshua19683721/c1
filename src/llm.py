@@ -138,7 +138,7 @@ class LLMClient:
         system: str = SYSTEM_PROMPT,
         json_mode: bool = False,
     ) -> str:
-        """Return the assistant's reply text.
+        """Return the assistant's reply text, in Traditional Chinese.
 
         Raises LLMUnavailable on any failure — callers decide what to do,
         because "the model is down" is a normal state for this app.
@@ -163,7 +163,15 @@ class LLMClient:
             content = response.choices[0].message.content or ''
         except Exception as exc:  # noqa: BLE001 - any backend error degrades
             raise LLMUnavailable(f'{type(exc).__name__}: {exc}') from exc
-        return content.strip()
+        # The single seam where model output becomes app text. Converting here
+        # rather than at each display site covers both callers — the evaluator's
+        # JSON reply and the reflection's prose — and it runs *before*
+        # extract_json_object() parses, so the feedback inside the JSON is
+        # Traditional by the time anything reads it. Authored corpus text never
+        # passes through here; it is already Traditional and conversion is not
+        # free. to_traditional() cannot raise, so a missing OpenCC costs the
+        # conversion, never the reply.
+        return zh.to_traditional(content.strip())
 
 
 def extract_json_object(text: str) -> dict[str, Any]:
