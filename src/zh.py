@@ -1,0 +1,83 @@
+﻿# -*- coding: utf-8 -*-
+"""繁體中文保證 — Simplified to Traditional Chinese, Taiwan conventions.
+
+The audience is Taiwanese 國小六年級 students, so every Chinese string that
+reaches a screen has to be Traditional. Authored content is written that way,
+but an LLM reply is not under our control: a model asked in Chinese will
+happily answer 「軟體」 or 「網路資訊」. This module is the single gate that
+catches that.
+
+Conversion uses OpenCC's s2twp profile, which maps Simplified to Traditional
+*and* swaps mainland vocabulary for Taiwan usage:
+
+    軟體   → 軟體        網路資訊 → 網路資訊        點選 → 點選
+
+s2tw alone would leave 「軟體」「網絡」, which are correct characters but wrong
+for a Taiwanese classroom.
+"""
+
+from __future__ import annotations
+
+__all__ = ['to_traditional', 'backend', 'is_already_traditional', 'REQUIRED_PACKAGE']
+
+REQUIRED_PACKAGE = 'opencc-python-reimplemented'
+
+_CONVERTER = None
+_BACKEND = 'unavailable'
+
+
+def _load():
+    global _CONVERTER, _BACKEND
+    if _CONVERTER is not None:
+        return _CONVERTER
+    try:
+        from opencc import OpenCC
+
+        _CONVERTER = (OpenCC('s2t'), OpenCC('s2twp'))
+        _BACKEND = 'opencc-s2t+s2twp'
+    except Exception:  # noqa: BLE001 - any import/config failure degrades
+        _CONVERTER = False
+        _BACKEND = 'unavailable'
+    return _CONVERTER
+
+
+def to_traditional(text: str) -> str:
+    """Return *text* in Traditional Chinese (Taiwan conventions).
+
+    Never raises. If OpenCC is not installed the text is returned unchanged —
+    a missing optional dependency must not take the classroom app down — and
+    backend() reports 'unavailable' so the UI can say so.
+    """
+    if not text:
+        return text
+    converter = _load()
+    if converter is False:
+        return text
+    s2t, s2twp = converter
+    try:
+        first_pass = s2t.convert(text)
+        # Two passes on purpose. The Taiwan phrase table rewrites correct
+        # Traditional text too — 說明 becomes 說明瞭 — so running it
+        # unconditionally would mangle text the model already got right.
+        # It only runs when the character pass actually changed something,
+        # i.e. when the model really did write Simplified.
+        if first_pass == text:
+            return text
+        return s2twp.convert(first_pass)
+    except Exception:  # noqa: BLE001 - conversion must never break a reply
+        return text
+
+
+def backend() -> str:
+    """Which converter is in use: opencc-s2t+s2twp, or unavailable."""
+    _load()
+    return _BACKEND
+
+
+def is_already_traditional(text: str) -> bool:
+    """True when conversion would be a no-op, i.e. the text has no Simplified.
+
+    Used by the test suite to prove the authored corpus and the UI chrome are
+    already Traditional, rather than merely being fixed up on the way out.
+    """
+    return to_traditional(text) == text
