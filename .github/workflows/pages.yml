@@ -6,16 +6,14 @@ name: Deploy site to GitHub Pages
 # nothing has to be configured in the repository settings. The first successful
 # run bootstraps the Pages site with "GitHub Actions" as its source.
 
+# Every push to main redeploys. A paths filter was tempting, but it makes
+# "I changed something and the site did not update" a recurring and confusing
+# failure mode, and this site is a few dozen kilobytes - the extra deploy costs
+# seconds. The build job re-runs the site tests first, so a broken change cannot
+# reach the published URL.
 on:
   push:
     branches: [main]
-    paths:
-      - site/**
-      - src/content.py
-      - tools/export_site_data.py
-      - tests/site/**
-      - tests/test_site.py
-      - .github/workflows/pages.yml
   workflow_dispatch:
 
 permissions:
