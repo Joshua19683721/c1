@@ -37,13 +37,27 @@ def test_option_evaluator_expects_the_documented_variables():
     assert set(placeholders_in(template)) == expected
 
 
-def test_cot_pipeline_expects_the_documented_variables():
+def test_cot_pipeline_lists_the_ten_answers_separately():
+    """The specification writes {{ answer_1 }}…{{ answer_10 }}, not a joined list.
+
+    Kept verbatim on purpose: enumerating them one per line maps more reliably
+    to the model's per-question reasoning than a single numbered blob.
+    """
     template = get_pipeline('cot_reflection_generator').first.prompt_template
-    expected = {
-        'article_title', 'article_text', 'question_count',
-        'answer_list', 'first_span', 'middle_span', 'last_span',
+    expected = {'article_title', 'article_text'} | {
+        f'answer_{i}' for i in range(1, 11)
     }
     assert set(placeholders_in(template)) == expected
+    for i in range(1, 11):
+        assert f'{{{{ answer_{i} }}}}' in template
+
+
+def test_cot_pipeline_uses_the_specified_headings():
+    template = get_pipeline('cot_reflection_generator').first.prompt_template
+    assert '第一部分：你的閱讀思考拼圖' in template
+    assert '第二部分：AI 老師的 CoT 思維鏈解析' in template
+    for stage in ('尋找線索', '串聯情意', '大腦昇華'):
+        assert stage in template
 
 
 def test_render_replaces_every_placeholder():

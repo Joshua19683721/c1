@@ -108,6 +108,49 @@ def test_generate_reflection_without_llm_uses_gists(article):
     assert 100 <= len(result.puzzle) <= 190
 
 
+SPEC_SHAPED_REPLY = """### 第一部分：你的閱讀思考拼圖 (Reading Semantic Puzzle)
+讀完這篇文章，我發現番茄之所以紅潤，是因為裡面有豐富的茄紅素。它能抗氧化，保護心血管；而且茄紅素是脂溶性的，煮熟加油才吸收得好。
+
+### 第二部分：AI 老師的 CoT 思維鏈解析 (Chain-of-Thought)
+- **第 1 步【尋找線索（細節理解）】**: 先從諺語和成分找出文章講的基本事實。
+- **第 2 步【串聯情意（推論分析）】**: 再把煮熟加油與吸收的因果關係串起來。
+- **第 3 步【大腦昇華（省思評鑑）】**: 最後回到生活應用，學會挑對的吃法。
+"""
+
+
+def test_parses_a_reply_written_in_the_specified_format():
+    """A model that follows the template headings must be understood.
+
+    Regressions this guards: the puzzle swallowing the heading text, and each
+    step keeping its own markdown bullet or the next step's.
+    """
+    from src.cot import _parse_llm_reflection
+
+    parsed = _parse_llm_reflection(SPEC_SHAPED_REPLY)
+    assert parsed is not None
+    puzzle, steps = parsed
+
+    assert puzzle.startswith('讀完這篇文章')
+    assert '第一部分' not in puzzle
+    assert 'Semantic Puzzle' not in puzzle
+
+    assert [s.number for s in steps] == [1, 2, 3]
+    for step, expected_tail in zip(
+        steps, ['基本事實。', '串起來。', '吃法。']
+    ):
+        assert step.body.endswith(expected_tail), step.body
+        assert '【' not in step.body, f'title leaked into body: {step.body}'
+        assert not step.body.rstrip().endswith('-'), f'bullet leaked: {step.body}'
+        assert '**' not in step.body
+
+
+def test_unusable_reply_is_rejected_rather_than_half_rendered():
+    from src.cot import _parse_llm_reflection
+
+    assert _parse_llm_reflection('抱歉，我無法完成這項任務。') is None
+    assert _parse_llm_reflection('### 第一部分：拼圖\n只有第一段，沒有思維鏈。') is None
+
+
 def test_reflection_survives_a_partially_answered_lesson():
     article = ARTICLES[0]
     lesson = build_lesson(article.id)

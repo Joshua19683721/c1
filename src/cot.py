@@ -40,6 +40,9 @@ COT_STAGES: tuple[tuple[str, int, int], ...] = (
 )
 
 _STEP_MARKER_RE = re.compile(r'第\s*([123])\s*步')
+# Markdown list bullets and ordered-item markers, so a step body does not keep
+# the "- " of its own bullet or the "- " that belongs to the following step.
+_LIST_MARKER_RE = re.compile(r'^\s*(?:[-*+\u2022]|\d+[.)])\s+')
 _PART1_RE = re.compile(r'第一\s*部分|Reading\s*Semantic\s*Puzzle', re.IGNORECASE)
 _PART2_RE = re.compile(r'第二\s*部分|Chain[- ]of[- ]Thought', re.IGNORECASE)
 
@@ -150,7 +153,7 @@ def _clean_section(text: str) -> str:
     """Drop markdown heading hashes and collapse blank lines."""
     lines = []
     for line in text.splitlines():
-        stripped = line.strip()
+        stripped = _LIST_MARKER_RE.sub('', line.strip())
         if stripped.startswith('#'):
             stripped = stripped.lstrip('#').strip()
         if stripped:
@@ -160,17 +163,45 @@ def _clean_section(text: str) -> str:
     ).strip()
 
 
+_STEP_TITLE_RE = re.compile(r'^[\s*_>\-•]*(?:【[^】]*】|\*\*[^*]*\*\*)[\s*_]*(?:[：:])?\s*')
+
+
+def _after_heading(text: str, start: int, end: int) -> str:
+    """Slice from *start* to *end*, discarding the heading line that follows.
+
+    The markers match mid-heading ("### 第一部分：..."), so text from the match
+    onwards still contains the tail of that heading.
+    """
+    line_end = text.find('\n', start)
+    if line_end == -1 or line_end > end:
+        line_end = end
+    return text[line_end:end]
+
+
+def _strip_step_title(body: str) -> str:
+    """Remove the 【…】 title a step carries inline.
+
+    The template writes each step as "第 1 步【尋找線索（細節理解）】: 說明…",
+    so the raw body starts by repeating the title we already render above it.
+    """
+    cleaned = body.replace('**', '')
+    cleaned = _STEP_TITLE_RE.sub('', cleaned, count=1)
+    return cleaned.lstrip(' ：:').strip()
+
+
 def _parse_llm_reflection(text: str) -> tuple[str, tuple[CoTStep, ...]] | None:
     """Split the model's Markdown into (puzzle, 3 steps), or None if unusable."""
     part1 = _PART1_RE.search(text)
     part2 = _PART2_RE.search(text)
 
     if part1 and part2 and part1.start() < part2.start():
-        puzzle = _clean_section(text[part1.end(): part2.start()])
+        # Skip the rest of the heading line too, otherwise the puzzle picks up
+        # "：你的閱讀思考拼圖 (Reading Semantic Puzzle)" as its first sentence.
+        puzzle = _clean_section(_after_heading(text, part1.end(), part2.start()))
     else:
         return None
 
-    cot_region = text[part2.end():] if part2 else ''
+    cot_region = _after_heading(text, part2.end(), len(text)) if part2 else ''
     markers = list(_STEP_MARKER_RE.finditer(cot_region))
     if len(markers) < 3:
         return None
@@ -180,8 +211,7 @@ def _parse_llm_reflection(text: str) -> tuple[str, tuple[CoTStep, ...]] | None:
         marker = next(m for m in markers if int(m.group(1)) == number)
         following = [m.start() for m in markers if m.start() > marker.start()]
         end = following[0] if following else len(cot_region)
-        body = _clean_section(cot_region[marker.end(): end])
-        body = body.lstrip('：: ').strip()
+        body = _strip_step_title(_clean_section(cot_region[marker.end(): end]))
         if not body:
             return None
         title = COT_STAGES[number - 1][0]
@@ -209,16 +239,22 @@ def generate_reflection(
     answer_list = '\n'.join(
         f'{i + 1}. {text}' for i, text in enumerate(answers) if text.strip()
     )
-    prompt = render_prompt(
-        pipeline.first.prompt_template,
-        article_title=f'{article.display_title}（{article.author}）',
-        article_text=article.text,
-        question_count=len([a for a in answers if a.strip()]),
-        answer_list=answer_list,
-        first_span='3',
-        middle_span='4',
-        last_span='3',
-    )
+    # The template lists the answers as {{ answer_1 }}…{{ answer_10 }}, exactly
+    # as the specification writes it. answer_list and the span variables are
+    # supplied too, so an edited template that prefers either still renders.
+    slots: dict[str, object] = {
+        'article_title': f'{article.display_title}（{article.author}）',
+        'article_text': article.text,
+        'question_count': len([a for a in answers if a.strip()]),
+        'answer_list': answer_list,
+        'first_span': '3',
+        'middle_span': '4',
+        'last_span': '3',
+    }
+    for position in range(1, 11):
+        value = answers[position - 1] if position <= len(answers) else ''
+        slots[f'answer_{position}'] = value
+    prompt = render_prompt(pipeline.first.prompt_template, **slots)
 
     try:
         reply = (client or default_client()).complete(prompt)
