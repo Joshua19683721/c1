@@ -4,7 +4,7 @@
 
     python tools/progress.py
 
-The agreed stage is 20 articles per category. A full year would be 365.
+The agreed stage is 30 articles per category. A full year would be 365.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src import content  # noqa: E402
 from src.categories import CATEGORIES, CATEGORY_ORDER  # noqa: E402
 
-TARGET = 20
+TARGET = 30
 
 
 def main() -> int:
