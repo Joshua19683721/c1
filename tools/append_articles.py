@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import re
 import sys
 from pathlib import Path
 
@@ -28,6 +29,10 @@ ANCHOR = 'ARTICLES = ('
 #: One source of truth for what counts as a Simplified slip, shared with
 #: tests/test_traditional.py via src.zh.
 SIMPLIFIED_ONLY = zh.SIMPLIFIED_ONLY
+
+#: Distractor wording the answer matcher folds into the negative probes used by
+#: tests/site/run_contract.mjs. Caught here so a batch never reaches that test.
+TRAP_PHRASES = ('很好吃', '我不知道', '忘記了', '天氣很好')
 
 
 def _closing_index(source: str) -> int:
@@ -44,6 +49,23 @@ def append(target: str, defs_path: str, entries_path: str) -> int:
     hits = sorted({ch for ch in SIMPLIFIED_ONLY if ch in defs or ch in entries})
     if hits:
         raise SystemExit(f'simplified characters in the new text: {"".join(hits)}')
+
+    # Only the distractors matter: the matcher never sees the article or stem
+    # text, so a poem may legitimately contain 「我不知道」.
+    option_text = ' '.join(
+        match.group(1) for match in re.finditer(r'"([^"]*\|[^"]*)"', defs)
+    )
+    traps = [phrase for phrase in TRAP_PHRASES if phrase in option_text]
+    # The matcher folds by character overlap, so three shared characters are
+    # enough for a distractor to swallow a probe. Check that directly.
+    for option in option_text.split('|'):
+        option = option.strip()
+        for phrase in TRAP_PHRASES:
+            shared = {ch for ch in option if ch in phrase}
+            if len(shared) >= 3:
+                traps.append(f'{option!r} shares {"".join(sorted(shared))} with {phrase!r}')
+    if traps:
+        raise SystemExit('distractor collides with the matcher probes: ' + '; '.join(traps))
 
     anchor = source.index(ANCHOR)
     source = source[:anchor] + defs.rstrip('\n') + '\n\n' + source[anchor:]
