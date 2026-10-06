@@ -1,0 +1,66 @@
+{
+  "name": "readexpress-cot-repair",
+  "id": "readexpress-cot-repair",
+  "description": "修復 ReadExpress-CoT 項目：清理測試緩存、驗證 pipeline 配置、確認所有 1133 測試通過，並準備完成 LLM 整合與內容擴展的後續計畫。",
+  "captainSessionId": "session-8fa089c4-797c-46f8-8149-9126a4fec2c9",
+  "createdAt": 1791268713260,
+  "members": [
+    {
+      "id": "",
+      "name": "planner",
+      "role": "planner",
+      "provider": "openrouter",
+      "model": "openrouter/free",
+      "executionPrompt": "Plan the work in the DAG, ensuring dependencies are clear and acceptance criteria are specific.",
+      "joinedAt": 1791268721977,
+      "status": "idle"
+    },
+    {
+      "id": "f2552837-21b8-474a-a29d-cd94d4b4f4ac",
+      "name": "fixer",
+      "role": "fixer",
+      "provider": "openrouter",
+      "model": "openrouter/free",
+      "executionPrompt": "Execute the fix tasks: clean up test artifacts, verify pipeline configuration, and ensure all tests pass.",
+      "joinedAt": 1791268721987,
+      "status": "idle"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "subject": "Clean up pytest cache artifacts",
+      "description": "Remove stale .pytest_cache/lastfailed file and clear cached test results. The lastfailed file records 10 old test failures that no longer apply since all 1133 tests currently pass. Ensure no test artifacts remain that could confuse future runs.",
+      "status": "completed",
+      "assignee": "captain",
+      "dependencies": [],
+      "attempt": 3,
+      "createdAt": 1791268735806,
+      "updatedAt": 1791268810946,
+      "kind": "work",
+      "reassigning": false,
+      "attemptId": "b79d2a25-d078-4757-8f88-624c512e13ec",
+      "output": "Successfully removed stale pytest cache artifacts (lastfailed file). All 1133 tests pass cleanly afterward."
+    },
+    {
+      "id": "t2",
+      "subject": "Verify pytest test suite passes cleanly",
+      "description": "Run python -m pytest tests/ --tb=short and confirm 1133 tests pass with zero failures. Verify the .pytest_cache/v/cache/lastfailed file is properly cleared after running. Document the test run results.",
+      "status": "completed",
+      "assignee": "captain",
+      "dependencies": [
+        "t1"
+      ],
+      "attempt": 2,
+      "createdAt": 1791268742705,
+      "updatedAt": 1791268873949,
+      "kind": "work",
+      "reassigning": false,
+      "attemptId": "617c7598-5df6-4daf-8c11-f8026290caab",
+      "output": "All 1133 tests pass cleanly. pytest test suite verification complete. No failures. The .pytest_cache/lastfailed artifacts were successfully removed and no longer contain stale failure data."
+    }
+  ],
+  "taskSeq": 2,
+  "phase": "running",
+  "approvedAt": 1791268739451
+}
