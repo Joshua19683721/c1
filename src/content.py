@@ -26,6 +26,7 @@ gist       A few-character essence, used by the offline reflection generator.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from datetime import date
 from hashlib import sha256
 from importlib import import_module
 from random import Random
@@ -45,6 +46,11 @@ __all__ = [
     "build_lesson",
     "lesson_seed",
     "articles_in_category",
+    "DAYS_IN_YEAR",
+    "day_of_year",
+    "daily_article",
+    "article_for_day",
+    "today_lessons",
     "TOTAL_QUESTIONS",
     "OPTION_COUNT",
     "MAX_GIST_CHARS",
@@ -96,6 +102,9 @@ class Article:
     text: str
     questions: tuple[Question, ...]
     category: str = "narrative"
+    #: 1-based day of the year this article is scheduled for (1..365). Assigned
+    #: from position within the category unless the module sets it explicitly.
+    day: int = 0
 
     @property
     def display_title(self) -> str:
@@ -205,11 +214,65 @@ def _load_categories() -> tuple[Article, ...]:
     return tuple(articles)
 
 
-ARTICLES: tuple[Article, ...] = _load_categories()
+#: 每天一篇：一年 365 個位置。閏年的第 366 天沿用第 365 天。
+DAYS_IN_YEAR = 365
+
+
+def _assign_days(articles: Sequence[Article]) -> tuple[Article, ...]:
+    """Give every article a slot in the year.
+
+    A category module may pin an explicit day; anything left at 0 takes the
+    next free position in that category. Sequential positions mean the exported
+    day map is stable: re-running the export never reshuffles the calendar.
+    """
+    counters: dict[str, int] = {}
+    assigned: list[Article] = []
+    for article in articles:
+        counters[article.category] = counters.get(article.category, 0) + 1
+        if article.day:
+            assigned.append(article)
+        else:
+            assigned.append(replace(article, day=counters[article.category]))
+    return tuple(assigned)
+
+
+ARTICLES: tuple[Article, ...] = _assign_days(_load_categories())
 
 BY_CATEGORY: dict[str, tuple[Article, ...]] = {
     slug: tuple(a for a in ARTICLES if a.category == slug) for slug in CATEGORY_ORDER
 }
+
+
+def day_of_year(when: date | None = None) -> int:
+    """1-based day of the year for *when* (today by default)."""
+    return (when or date.today()).timetuple().tm_yday
+
+
+def article_for_day(slug: str, day: int) -> Article | None:
+    """The article this category reads on day-of-year *day*.
+
+    An article whose day matches wins. Until a category is filled to 365, the
+    remaining days fall back to cycling through what exists, so the app always
+    has something to show on the way to a full library.
+    """
+    group = BY_CATEGORY.get(slug, ())
+    if not group:
+        return None
+    slot = min(max(day, 1), DAYS_IN_YEAR)
+    for article in group:
+        if article.day == slot:
+            return article
+    return group[(slot - 1) % len(group)]
+
+
+def daily_article(slug: str, when: date | None = None) -> Article | None:
+    """The article this category reads on *when* (today by default)."""
+    return article_for_day(slug, day_of_year(when))
+
+
+def today_lessons(when: date | None = None) -> tuple[tuple[str, Article | None], ...]:
+    """(slug, today's article) for every category, in navigation order."""
+    return tuple((slug, daily_article(slug, when)) for slug in CATEGORY_ORDER)
 
 
 def get_article(article_id: str) -> Article | None:

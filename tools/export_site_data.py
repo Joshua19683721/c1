@@ -72,6 +72,7 @@ def build_payload() -> dict:
                 "author": article.author,
                 "genre": article.genre,
                 "category": article.category,
+                "day": article.day,
                 "categoryLabel": category.label,
                 "categoryIcon": category.icon,
                 "categoryBlurb": category.blurb,
@@ -83,6 +84,16 @@ def build_payload() -> dict:
         "generatedFrom": "src/categories/*.py",
         "optionCount": content.OPTION_COUNT,
         "questionCount": content.TOTAL_QUESTIONS,
+        "daysInYear": content.DAYS_IN_YEAR,
+        # The whole calendar, resolved in Python, so the browser cannot drift:
+        # daily[slug][d - 1] is the article for day-of-year d.
+        "daily": {
+            slug: [
+                content.article_for_day(slug, day).id
+                for day in range(1, content.DAYS_IN_YEAR + 1)
+            ]
+            for slug in CATEGORY_ORDER
+        },
         "categories": [
             {
                 "slug": slug,

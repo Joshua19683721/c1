@@ -12,15 +12,20 @@ Layout follows the specification blueprint:
 
 from __future__ import annotations
 
+from datetime import date
+
 import streamlit as st
 
 from src import ui
 from src.categories import CATEGORIES, CATEGORY_ORDER
 from src.content import (
     ARTICLES,
+    DAYS_IN_YEAR,
     TOTAL_QUESTIONS,
     articles_in_category,
     build_lesson,
+    daily_article,
+    day_of_year,
     get_article,
 )
 from src.cot import generate_reflection
@@ -51,6 +56,14 @@ ARTICLE_LABELS = {
     )
     for article in ARTICLES
 }
+
+
+# 每天一篇：今天要讀哪一篇由 content.daily_article() 決定（1/1–12/31 各一篇）。
+TODAY = date.today()
+TODAY_DAY = day_of_year(TODAY)
+FIRST_POPULATED = next(
+    (s for s in CATEGORY_ORDER if articles_in_category(s)), None
+)
 
 
 # ---------------------------------------------------------------------------
@@ -91,6 +104,18 @@ def reset_lesson(article_id: str) -> None:
     st.session_state.rx_reflection = None
     st.session_state.rx_input = ''
     st.session_state.rx_wrong_attempts = 0
+
+
+def open_article(article_id: str) -> None:
+    """Jump to an article and let the pickers follow.
+
+    The two selectboxes keep their own widget state, so switching articles
+    without dropping those keys would let the old selection win on the next
+    rerun and snap the lesson back.
+    """
+    reset_lesson(article_id)
+    st.session_state.pop('rx_category_picker', None)
+    st.session_state.pop('rx_article_picker', None)
 
 
 def current_lesson():
@@ -157,7 +182,11 @@ def next_question() -> None:
 
 
 defaults = {
-    'rx_article_id': ARTICLES[0].id,
+    # Opening the app lands on today's article, not the first in the library.
+    'rx_article_id': (
+        (daily_article(FIRST_POPULATED, TODAY) if FIRST_POPULATED else None)
+        or ARTICLES[0]
+    ).id,
     'rx_q': 0,
     'rx_answers': [''] * TOTAL_QUESTIONS,
     'rx_correct': [False] * TOTAL_QUESTIONS,
@@ -237,6 +266,34 @@ with st.sidebar:
     if st.button('🔄 重新開始這篇文章', use_container_width=True, key='rx_restart'):
         reset_lesson(st.session_state.rx_article_id)
         st.rerun()
+
+
+# ---------------------------------------------------------------------------
+# 今日課程 — 每天每個分類各一篇
+# ---------------------------------------------------------------------------
+
+st.markdown(
+    f'<div class="rx-subtitle"><strong>📅 今日課程</strong>　'
+    f'{TODAY:%Y/%m/%d}　·　第 {TODAY_DAY} 天 / 共 {DAYS_IN_YEAR} 天</div>',
+    unsafe_allow_html=True,
+)
+
+today_columns = st.columns(len(CATEGORY_ORDER))
+for column, today_slug in zip(today_columns, CATEGORY_ORDER):
+    today_article = daily_article(today_slug, TODAY)
+    if today_article is None:
+        continue
+    with column:
+        if st.button(
+            f'{CATEGORIES[today_slug].icon} {CATEGORIES[today_slug].label}\n'
+            f'{today_article.display_title}',
+            key=f'rx_today_{today_slug}',
+            use_container_width=True,
+        ):
+            open_article(today_article.id)
+            st.rerun()
+
+st.divider()
 
 
 # ---------------------------------------------------------------------------

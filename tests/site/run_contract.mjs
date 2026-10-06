@@ -19,6 +19,7 @@ import {
   fuzzyMatchOption,
   foldRelaxed,
 } from '../../site/lib/parser.js';
+import { dailyArticleId } from '../../site/lib/daily.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const data = JSON.parse(
@@ -135,8 +136,41 @@ for (const article of data.articles) {
   }
 }
 
+// The daily calendar is resolved in Python and shipped in the payload; the
+// browser only indexes it. These checks make sure the two ends agree.
+let dailyChecked = 0;
+const daily = data.daily || {};
+const daysInYear = data.daysInYear || 365;
+for (const category of data.categories) {
+  const list = daily[category.slug];
+  if (!list) {
+    if (category.count > 0) fail(`${category.slug}: missing daily calendar`);
+    continue;
+  }
+  if (list.length !== daysInYear) {
+    fail(`${category.slug}: daily calendar has ${list.length} days, expected ${daysInYear}`);
+  }
+  list.forEach((id, position) => {
+    dailyChecked += 1;
+    const art = data.articles.find((a) => a.id === id);
+    if (!art) fail(`${category.slug}: day ${position + 1} points at unknown article ${id}`);
+    else if (art.category !== category.slug) {
+      fail(`${category.slug}: day ${position + 1} points at ${id} in ${art.category}`);
+    }
+    if (dailyArticleId(daily, category.slug, position + 1, daysInYear) !== id) {
+      fail(`${category.slug}: day ${position + 1} does not resolve back to ${id}`);
+    }
+  });
+  // Leap day (366) reuses the last slot instead of running off the end.
+  const last = list[list.length - 1];
+  if (dailyArticleId(daily, category.slug, daysInYear + 1, daysInYear) !== last) {
+    fail(`${category.slug}: leap day does not clamp to the last slot`);
+  }
+}
+
 const summary = {
   articles: data.articles.length,
+  dailyChecked,
   questions: data.articles.reduce((n, a) => n + a.questions.length, 0),
   verbatimChecked,
   verbatimWrong,

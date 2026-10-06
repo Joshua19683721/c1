@@ -150,3 +150,16 @@ h2.section { font-size: 1.3rem; margin: 24px 0 12px; }
 
 .footer { color: var(--muted); font-size: .85rem; text-align: center; padding: 30px 0 0; }
 .hidden { display: none !important; }
+
+/* --- 今日課程 ----------------------------------------------------------- */
+.today{margin:6px 0 14px}
+.today-head{display:flex;gap:10px;align-items:baseline;margin-bottom:8px}
+.today-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.today-card{display:flex;flex-direction:column;gap:4px;text-align:left;padding:10px 12px;
+  border:1px solid #DCE3EC;border-radius:12px;background:#FFF;cursor:pointer;font:inherit}
+.today-card:hover{border-color:#7AA7E0}
+.today-card[aria-pressed="true"]{border-color:#2F6FD0;box-shadow:0 0 0 2px rgba(47,111,208,.15)}
+.today-cat{font-size:.82rem;color:#6B7A90;font-weight:600}
+.today-title{font-weight:700;color:#1F2A37}
+.article-card.is-today{border-color:#2F6FD0}
+

@@ -11,6 +11,7 @@
 
 import { fuzzyMatchOption, extractOptionIndex } from './lib/parser.js';
 import { buildLocalReflection } from './lib/reflection.js';
+import { dailyArticleId, dateLabel, dayOfYear } from './lib/daily.js';
 
 const PRAISE = [
   '\u7b54\u5c0d\u5566\uff01\u4f60\u8b80\u5f97\u5f88\u4ed4\u7d30\u55ae\uff01',
@@ -28,6 +29,9 @@ const $ = (id) => document.getElementById(id);
 const state = {
   articles: [],
   categories: [],
+  daily: {},
+  daysInYear: 365,
+  today: 1,
   category: null,
   articleId: null,
   index: 0,
@@ -235,6 +239,44 @@ function articlesIn(slug) {
   return state.articles.filter((a) => a.category === slug);
 }
 
+function todayArticleId(slug) {
+  return dailyArticleId(state.daily, slug, state.today, state.daysInYear);
+}
+
+function renderToday() {
+  const host = $('todayPanel');
+  if (!host) return;
+  host.innerHTML = '';
+  const heading = document.createElement('div');
+  heading.className = 'today-head';
+  heading.innerHTML = '<strong>📅 今日課程</strong>'
+    + `<span class="meta">${dateLabel()}　第 ${state.today} 天 / 共 ${state.daysInYear} 天</span>`;
+  host.appendChild(heading);
+
+  const row = document.createElement('div');
+  row.className = 'today-row';
+  for (const category of state.categories) {
+    const id = todayArticleId(category.slug);
+    const art = state.articles.find((a) => a.id === id);
+    if (!art) continue;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'today-card';
+    button.setAttribute('aria-pressed', String(art.id === state.articleId));
+    button.innerHTML = `<span class="today-cat">${category.icon} ${escapeHtml(category.label)}</span>`
+      + `<span class="today-title">${escapeHtml(art.displayTitle)}</span>`;
+    button.addEventListener('click', () => {
+      state.category = category.slug;
+      state.articleId = art.id;
+      renderCategories();
+      renderArticleGrid();
+      restart();
+    });
+    row.appendChild(button);
+  }
+  host.appendChild(row);
+}
+
 function renderCategories() {
   const host = $('categories');
   host.innerHTML = '';
@@ -247,6 +289,14 @@ function renderCategories() {
       + `<span class="count">${category.count}</span>`;
     button.addEventListener('click', () => {
       state.category = category.slug;
+      const today = todayArticleId(category.slug);
+      if (today) {
+        state.articleId = today;
+        renderCategories();
+        renderArticleGrid();
+        restart();
+        return;
+      }
       renderCategories();
       renderArticleGrid();
     });
@@ -273,9 +323,11 @@ function renderArticleGrid() {
     card.className = 'article-card';
     card.setAttribute('role', 'listitem');
     if (art.id === state.articleId) card.setAttribute('aria-current', 'true');
+    const isToday = art.id === todayArticleId(state.category);
+    if (isToday) card.classList.add('is-today');
     const name = document.createElement('div');
     name.className = 'name';
-    name.textContent = art.displayTitle;
+    name.textContent = isToday ? `${art.displayTitle}　📅 今日` : art.displayTitle;
     const who = document.createElement('div');
     who.className = 'who';
     who.textContent = `${art.author}・${art.genre}`;
@@ -500,13 +552,18 @@ async function boot() {
     const payload = await response.json();
     state.articles = payload.articles;
     state.categories = payload.categories || [];
+    state.daily = payload.daily || {};
+    state.daysInYear = payload.daysInYear || 365;
+    state.today = dayOfYear();
     // Land on a category that actually has articles, so the grid is never
-    // showing an empty shelf on first load.
+    // showing an empty shelf on first load, and open today's article there.
     const firstPopulated = state.categories.find((c) => c.count > 0);
     state.category = firstPopulated ? firstPopulated.slug : null;
-    state.articleId = firstPopulated
-      ? articlesIn(firstPopulated.slug)[0].id
-      : state.articles[0].id;
+    const todays = firstPopulated ? todayArticleId(firstPopulated.slug) : null;
+    state.articleId = todays
+      || (firstPopulated
+        ? articlesIn(firstPopulated.slug)[0].id
+        : state.articles[0].id);
     $('libraryCount').textContent = `共 ${state.articles.length} 篇文章、${state.articles.length * 10} 道題`;
   } catch (err) {
     $('subtitle').textContent =
@@ -514,6 +571,7 @@ async function boot() {
     return;
   }
 
+  renderToday();
   renderCategories();
   renderArticleGrid();
 
