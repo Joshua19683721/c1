@@ -20,6 +20,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from . import zh
 from .content import Article
 from .llm import LLMClient, LLMUnavailable, default_client
 from .prompts import get_pipeline, render_prompt
@@ -276,9 +277,19 @@ def generate_reflection(
         )
 
     puzzle, steps = parsed
+    # Second line of defence. The client seam already converts model output,
+    # but the reflection is the last thing a student reads before leaving, so
+    # it is converted again here rather than trusting that path.
     return ReflectionResult(
-        puzzle=puzzle,
-        steps=steps,
+        puzzle=zh.to_traditional(puzzle),
+        steps=tuple(
+            CoTStep(
+                number=step.number,
+                title=zh.to_traditional(step.title),
+                body=zh.to_traditional(step.body),
+            )
+            for step in steps
+        ),
         source='llm',
         note='由 AI 國語老師生成',
     )

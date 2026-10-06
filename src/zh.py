@@ -38,7 +38,8 @@ SIMPLIFIED_ONLY = (
     '狮猫猪鸡鸭鹅马鸟鱼龙龟蚁蚂铁银铅纸笔图馆记声听观见觉变让谁请谢讲词语'
     '门问间关开无长为车动务员园围场处复备够头妇妈宝实将层岁师帮广当录忆忧怀态总'
     '恶戏战户报担数旧时显术机条极树样检欢气汉汤沟泪济湾满灯灵烦烧'
-    '赏虫写览阅团圆坚奖怜恳撑摇摊'
+    '赏虫写览团圆坚奖怜恳撑摇摊'
+    '兴乐习义乡亲众优会传伤价仅从仓仪产亚'
 )
 
 
@@ -65,22 +66,38 @@ def _load():
         _BACKEND = 'opencc-s2t+s2twp'
     except Exception:  # noqa: BLE001 - any import/config failure degrades
         _CONVERTER = False
-        _BACKEND = 'unavailable'
+        _BACKEND = 'builtin-fallback-table'
     return _CONVERTER
+
+
+def _fallback(text: str) -> str:
+    """Convert with the built-in character table (no OpenCC needed).
+
+    The dependency is optional so a missing install cannot take the classroom
+    app down, but returning the model's Simplified reply untouched is worse
+    than a partial conversion: the student sees Simplified on screen. This
+    table covers the single-character differences only; OpenCC stays primary.
+    """
+    if not text:
+        return text
+    from .zh_fallback import FALLBACK_MAP
+
+    return ''.join(FALLBACK_MAP.get(char, char) for char in text)
 
 
 def to_traditional(text: str) -> str:
     """Return *text* in Traditional Chinese (Taiwan conventions).
 
-    Never raises. If OpenCC is not installed the text is returned unchanged —
-    a missing optional dependency must not take the classroom app down — and
-    backend() reports 'unavailable' so the UI can say so.
+    Never raises. OpenCC is used when it is installed; otherwise the built-in
+    fallback table converts the characters it knows, so Simplified model output
+    does not reach the screen unconverted either way. backend() reports which
+    of the two ran.
     """
     if not text:
         return text
     converter = _load()
     if converter is False:
-        return text
+        return _fallback(text)
     s2t, s2twp = converter
     try:
         first_pass = s2t.convert(text)
@@ -93,7 +110,7 @@ def to_traditional(text: str) -> str:
             return text
         return s2twp.convert(first_pass)
     except Exception:  # noqa: BLE001 - conversion must never break a reply
-        return text
+        return _fallback(text)
 
 
 def backend() -> str:

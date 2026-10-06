@@ -118,6 +118,48 @@ SPEC_SHAPED_REPLY = """### 第一部分：你的閱讀思考拼圖 (Reading Sema
 """
 
 
+SIMPLIFIED_REPLY = """### 第一部分：你的閱讀思考拼圖 (Reading Semantic Puzzle)
+读完这篇文章，我发现这个学生抓住了一个重点：老爷车虽然旧，但是很温暖。
+
+### 第二部分：AI 老师的 CoT 思维链解析 (Chain-of-Thought)
+- **第 1 步【尋找線索（細節理解）】**: 先从文章里找出这个学生在意的细节。
+- **第 2 步【串聯情意（推論分析）】**: 再把细节和心情连起来，老师和学生一起想。
+- **第 3 步【大腦昇華（省思評鑑）】**: 最后回到生活应用，学会替别人想。
+"""
+
+
+class _SimplifiedClient:
+    """A model that answers the reflection prompt in Simplified Chinese."""
+
+    def __init__(self, reply: str) -> None:
+        self.reply = reply
+
+    def complete(self, prompt: str) -> str:  # noqa: ARG002 - stub
+        return self.reply
+
+
+def test_llm_reflection_is_served_in_traditional_chinese():
+    """Both halves the student reads last must be Traditional.
+
+    The model writes the 閱讀思考拼圖 and the CoT steps, so this is the most
+    likely place for Simplified text to reach the screen.
+    """
+    from src.content import get_article
+    from src.zh import simplified_characters
+
+    article = get_article('beiying')
+    answers = [q.correct_text for q in article.questions]
+    result = generate_reflection(
+        article, answers, client=_SimplifiedClient(SIMPLIFIED_REPLY),
+    )
+
+    assert result.source == 'llm'
+    assert not simplified_characters(result.puzzle), result.puzzle
+    for step in result.steps:
+        assert not simplified_characters(step.title), step.title
+        assert not simplified_characters(step.body), step.body
+
+
 def test_parses_a_reply_written_in_the_specified_format():
     """A model that follows the template headings must be understood.
 
