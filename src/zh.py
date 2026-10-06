@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """繁體中文保證 — Simplified to Traditional Chinese, Taiwan conventions.
 
 The audience is Taiwanese 國小六年級 students, so every Chinese string that
@@ -18,9 +18,36 @@ for a Taiwanese classroom.
 
 from __future__ import annotations
 
-__all__ = ['to_traditional', 'backend', 'is_already_traditional', 'REQUIRED_PACKAGE']
+__all__ = [
+    'to_traditional',
+    'backend',
+    'is_already_traditional',
+    'REQUIRED_PACKAGE',
+    'SIMPLIFIED_ONLY',
+    'simplified_characters',
+]
 
 REQUIRED_PACKAGE = 'opencc-python-reimplemented'
+
+#: Characters that exist only in Simplified Chinese. Deliberately narrow: 台/臺,
+#: 里/裡 and 只/隻 are Taiwan usage variants, so an OpenCC round-trip would
+#: report false positives on perfectly good Traditional text. This list is the
+#: cheap, exact check used for authored articles.
+SIMPLIFIED_ONLY = (
+    '们个静现学书说语读写给应该认识这么为吗体对错进过还没点热爱双边万与专东丝严丧'
+    '狮猫猪鸡鸭鹅马鸟鱼龙龟蚁蚂铁银铅纸笔图馆记声听观见觉变让谁请谢讲词语'
+    '门问间关开无长为车动务员园围场处复备够头妇妈宝实将层岁师帮广当录忆忧怀态总'
+    '恶戏战户报担数旧时显术机条极树样检欢气汉汤沟泪济湾满灯灵烦烧'
+)
+
+
+def simplified_characters(text: str) -> list[str]:
+    """The Simplified characters present in *text*, in reading order."""
+    seen: list[str] = []
+    for char in text:
+        if char in SIMPLIFIED_ONLY and char not in seen:
+            seen.append(char)
+    return seen
 
 _CONVERTER = None
 _BACKEND = 'unavailable'

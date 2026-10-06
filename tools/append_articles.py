@@ -18,11 +18,16 @@ from __future__ import annotations
 import argparse
 import io
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from src import zh  # noqa: E402
 
 ANCHOR = 'ARTICLES = ('
-#: Characters that only exist in simplified text; flagged so a slip is caught
-#: before it reaches the library-wide test.
-SIMPLIFIED_ONLY = '们个静现学书说语读写给应该认识这么为吗体对错进过还没点热爱双边万与专东丝严丧'
+#: One source of truth for what counts as a Simplified slip, shared with
+#: tests/test_traditional.py via src.zh.
+SIMPLIFIED_ONLY = zh.SIMPLIFIED_ONLY
 
 
 def _closing_index(source: str) -> int:

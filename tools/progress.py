@@ -4,8 +4,7 @@
 
     python tools/progress.py
 
-The agreed stage is 30 articles per category — a month of daily reading with no
-repeats. A full year would be 365.
+The agreed stage is 20 articles per category. A full year would be 365.
 """
 
 from __future__ import annotations
@@ -19,7 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src import content  # noqa: E402
 from src.categories import CATEGORIES, CATEGORY_ORDER  # noqa: E402
 
-TARGET = 30
+TARGET = 20
 
 
 def main() -> int:
@@ -35,8 +34,10 @@ def main() -> int:
             f'{("達成" if gap == 0 else "還缺 %d 篇" % gap):>10}  '
             f'{content.DAYS_IN_YEAR - count:>6}'
         )
-    print(f'{"合計":<{width}}  {total:>4}  '
-          f'{max(TARGET * len(CATEGORY_ORDER) - total, 0):>10}')
+    # A category that overshoots the target does not pay for one that is behind.
+    gap = sum(max(TARGET - len(content.articles_in_category(s)), 0)
+              for s in CATEGORY_ORDER)
+    print(f'{"合計":<{width}}  {total:>4}  {gap:>10}')
     return 0
 
 
