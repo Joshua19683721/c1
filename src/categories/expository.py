@@ -7618,554 +7618,722 @@ _KEJI_QUESTIONS = [
       "訊息傳遞的演變"),
 ]
 
+
+# ============================================================
+# 全部文章（依檔案中的主題順序，已去除重複 id）
+# ============================================================
+
 ARTICLES = (
-    article(
-        id="shuyeqiutianhuang", title="樹葉為什麼在秋天變黃", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_SYY_TEXT,
-        questions=_SYY_QUESTIONS,
-    ),
-    article(
-        id="mayibuzhilu", title="螞蟻為什麼不會迷路", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_MAYI_TEXT,
-        questions=_MAYI_QUESTIONS,
-    ),
-    article(
-        id="mifenghuami", title="蜜蜂怎麼找到花蜜", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_MIFENG_TEXT,
-        questions=_MIFENG_QUESTIONS,
-    ),
-    article(
-        id="tiankonglanse", title="為什麼天空是藍色的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_TIANKONG_TEXT,
-        questions=_TIANKONG_QUESTIONS,
-    ),
-    article(
-        id="yunzaishenmeyangcheng", title="雲是怎麼形成的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YUN_TEXT,
-        questions=_YUN_QUESTIONS,
-    ),
-    _FANQIE,
-    article(
-        id="leishengzenmelai", title="打雷是怎麼來的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LEIDIAN_TEXT,
-        questions=_LEIDIAN_QUESTIONS,
-    ),
-    article(
-        id="caihongzenmechuxian", title="彩虹是怎麼出現的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CAIHONG_TEXT,
-        questions=_CAIHONG_QUESTIONS,
-    ),
-    article(
-        id="haishuiweishenmexian", title="海水為什麼是鹹的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HAISHUI_TEXT,
-        questions=_HAISHUI_QUESTIONS,
-    ),
-    article(
-        id="zhongzizenmefaya", title="種子怎麼發芽", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_ZHONGZI_TEXT,
-        questions=_ZHONGZI_QUESTIONS,
-    ),
-    article(
-        id="baitianheiwanshang", title="為什麼有白天和晚上", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BAITIAN_TEXT,
-        questions=_BAITIAN_QUESTIONS,
-    ),
-    article(
-        id="yueliangbianxing", title="月亮為什麼會變形", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YUELIANG_TEXT,
-        questions=_YUELIANG_QUESTIONS,
-    ),
-    article(
-        id="weiyoushenmesiji", title="為什麼會有四季", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_SIJI_TEXT,
-        questions=_SIJI_QUESTIONS,
-    ),
-    article(
-        id="kedoubianqingwa", title="蝌蚪怎麼變成青蛙", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_KEDOU_TEXT,
-        questions=_KEDOU_QUESTIONS,
-    ),
-    article(
-        id="fengzenmelaide", title="風是怎麼來的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_FENG_TEXT,
-        questions=_FENG_QUESTIONS,
-    ),
-    article(
-        id="tieweishenmehuishengxiu", title="鐵為什麼會生鏽", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_TIEXIU_TEXT,
-        questions=_TIEXIU_QUESTIONS,
-    ),
-    article(
-        id="yingzizenmelaide", title="影子是怎麼來的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YINGZI_TEXT,
-        questions=_YINGZI_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuidizhen", title="為什麼會地震", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_DIZHEN_TEXT,
-        questions=_DIZHEN_QUESTIONS,
-    ),
-    article(
-        id="yushizenmelaide", title="雨是怎麼來的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YU_TEXT,
-        questions=_YU_QUESTIONS,
-    ),
-    article(
-        id="huiyizenmehuishi", title="回音是怎麼回事", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HUIYIN_TEXT,
-        questions=_HUIYIN_QUESTIONS,
-    ),
-    article(
-        id="chaoxizenmelaide", title="潮汐是怎麼來的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CHAOXI_TEXT,
-        questions=_CHAOXI_QUESTIONS,
-    ),
-    article(
-        id="feizaoweishenmenengxi", title="肥皂為什麼能去汙", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_FEIZAO_TEXT,
-        questions=_FEIZAO_QUESTIONS,
-    ),
-    article(
-        id="beijixiongweishenmebupaleng", title="北極熊為什麼不怕冷", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BEIJIXIONG_TEXT,
-        questions=_BEIJIXIONG_QUESTIONS,
-    ),
-    article(
-        id="gaoshanshangzhuomian", title="高山上為什麼煮不熟", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GAOSHAN_TEXT,
-        questions=_GAOSHAN_QUESTIONS,
-    ),
-    # 植物
-    article(
-        id="zhiwuweishenmeyaoyangguang", title="為什麼植物需要陽光", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_ZHIWU_YANGGUANG_TEXT,
-        questions=_ZHIWU_YANGGUANG_QUESTIONS,
-    ),
-    article(
-        id="huaweishenmehuiyouse", title="為什麼花有各種顏色", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HUA_YANSE_TEXT,
-        questions=_HUA_YANSE_QUESTIONS,
-    ),
-    article(
-        id="huaweishenmehuixiang", title="為什麼花會有香味", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HUA_XIANG_TEXT,
-        questions=_HUA_XIANG_QUESTIONS,
-    ),
-    article(
-        id="guoshiweishenmehuichengshu", title="為什麼果實會成熟", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GUOSHI_TEXT,
-        questions=_GUOSHI_QUESTIONS,
-    ),
-    article(
-        id="xianrenzhangweishenmenengzai", title="為什麼仙人掌能在沙漠生存", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XIANRENZHANG_TEXT,
-        questions=_XIANRENZHANG_QUESTIONS,
-    ),
-    article(
-        id="hanxiucaoweishenmehuibihe", title="為什麼含羞草會閉合", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HANXIUCAO_TEXT,
-        questions=_HANXIUCAO_QUESTIONS,
-    ),
-    article(
-        id="shuweishenmehuiniance", title="為什麼樹會有年輪", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_NIANLUN_TEXT,
-        questions=_NIANLUN_QUESTIONS,
-    ),
-    article(
-        id="genweishenmexiangxiazhang", title="為什麼根向下長", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GEN_XIANGXIA_TEXT,
-        questions=_GEN_XIANGXIA_QUESTIONS,
-    ),
-    article(
-        id="zhiwuweishenmehuixiangguang", title="為什麼植物會向光生長", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XIANGGUANG_TEXT,
-        questions=_XIANGGUANG_QUESTIONS,
-    ),
-    article(
-        id="zhongziweishenmeyaoshuijiao", title="為什麼種子要休眠", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_ZHONGZI_SHUIJIAO_TEXT,
-        questions=_ZHONGZI_SHUIJIAO_QUESTIONS,
-    ),
-    # 人體
-    article(
-        id="weishenmehuidaqianpen", title="為什麼會打噴嚏", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_DAQIANPEN_TEXT,
-        questions=_DAQIANPEN_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiliuhan", title="為什麼會流汗", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LIUHAN_TEXT,
-        questions=_LIUHAN_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiqijipigeda", title="為什麼會起雞皮疙瘩", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JIQIPIGEDA_TEXT,
-        questions=_JIQIPIGEDA_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuidahaqian", title="為什麼會打哈欠", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_DAHAQIAN_TEXT,
-        questions=_DAHAQIAN_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuikouke", title="為什麼會口渴", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_KOUKE_TEXT,
-        questions=_KOUKE_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuijiezhi", title="為什麼傷口會結痂", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JIEZHI_TEXT,
-        questions=_JIEZHI_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuifashao", title="為什麼會發燒", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_FASHAO_TEXT,
-        questions=_FASHAO_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuijinshi", title="為什麼會近視", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JINSHI_TEXT,
-        questions=_JINSHI_QUESTIONS,
-    ),
-    article(
-        id="weishenmezhijiahuizhang", title="為什麼指甲會長長", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_ZHIJIA_TEXT,
-        questions=_ZHIJIA_QUESTIONS,
-    ),
-    article(
-        id="weishenmetoufahuibianbai", title="為什麼頭髮會變白", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_TOUFA_TEXT,
-        questions=_TOUFA_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuizhuyai", title="為什麼會蛀牙", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_ZHUYAI_TEXT,
-        questions=_ZHUYAI_QUESTIONS,
-    ),
-    article(
-        id="weishenmexueyeshihongse", title="為什麼血是紅色的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XUEYE_TEXT,
-        questions=_XUEYE_QUESTIONS,
-    ),
-    article(
-        id="weishenmeyaoshuijiao", title="為什麼要睡覺", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_SHUIJIAO_TEXT,
-        questions=_SHUIJIAO_QUESTIONS,
-    ),
-    article(
-        id="weishenmexintiaohuijia", title="為什麼心跳會加快", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XINTIAO_TEXT,
-        questions=_XINTIAO_QUESTIONS,
-    ),
-    # 動物
-    article(
-        id="houniaoweishenmezhi", title="為什麼候鳥知道方向", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HOUNIAO_TEXT,
-        questions=_HOUNIAO_QUESTIONS,
-    ),
-    article(
-        id="gouweishenmetieshe", title="為什麼狗會吐舌頭", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GOU_TIESHE_TEXT,
-        questions=_GOU_TIESHE_QUESTIONS,
-    ),
-    article(
-        id="maoweishenmehuihulu", title="為什麼貓會呼嚕", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_MAO_HULU_TEXT,
-        questions=_MAO_HULU_QUESTIONS,
-    ),
-    article(
-        id="yuweishenmenengzai", title="為什麼魚能在水裡呼吸", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YU_HUXI_TEXT,
-        questions=_YU_HUXI_QUESTIONS,
-    ),
-    article(
-        id="qieweishenmebupaleng", title="為什麼企鵝不怕冷", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_QIE_TEXT,
-        questions=_QIE_QUESTIONS,
-    ),
-    article(
-        id="luotuo", title="為什麼駱駝能忍受沙漠", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LUOTUO_TEXT,
-        questions=_LUOTUO_QUESTIONS,
-    ),
-    article(
-        id="yinghuochong", title="為什麼螢火蟲會發光", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YINGHUOCHONG_TEXT,
-        questions=_YINGHUOCHONG_QUESTIONS,
-    ),
-    article(
-        id="zhizhu", title="為什麼蜘蛛會結網", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_ZHIZHU_TEXT,
-        questions=_ZHIZHU_QUESTIONS,
-    ),
-    article(
-        id="can", title="為什麼蠶會吐絲", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CAN_TEXT,
-        questions=_CAN_QUESTIONS,
-    ),
-    article(
-        id="chan", title="為什麼蟬會叫", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CHAN_TEXT,
-        questions=_CHAN_QUESTIONS,
-    ),
-    article(
-        id="hudie", title="為什麼蝴蝶翅膀有花紋", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HUDIE_TEXT,
-        questions=_HUDIE_QUESTIONS,
-    ),
-    article(
-        id="woniu", title="為什麼蝸牛有殼", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_WONIU_TEXT,
-        questions=_WONIU_QUESTIONS,
-    ),
-    article(
-        id="bianfu", title="為什麼蝙蝠用聲音認路", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BIANFU_TEXT,
-        questions=_BIANFU_QUESTIONS,
-    ),
-    article(
-        id="daxiang", title="為什麼大象有長鼻子", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_DAXIANG_TEXT,
-        questions=_DAXIANG_QUESTIONS,
-    ),
-    article(
-        id="changjinglu", title="為什麼長頸鹿脖子長", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CHANGJINGLU_TEXT,
-        questions=_CHANGJINGLU_QUESTIONS,
-    ),
-    article(
-        id="jingyu", title="為什麼鯨魚要浮出水面", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JINGYU_TEXT,
-        questions=_JINGYU_QUESTIONS,
-    ),
-    article(
-        id="bianselong", title="為什麼變色龍會變色", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BIANSELONG_TEXT,
-        questions=_BIANSELONG_QUESTIONS,
-    ),
-    # 物理
-    article(
-        id="weishenmedongxiwangxia", title="為什麼東西會往下掉", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_DONGXI_WANGXIA_TEXT,
-        questions=_DONGXI_WANGXIA_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuifuli", title="為什麼會有浮力", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_FULI_TEXT,
-        questions=_FULI_QUESTIONS,
-    ),
-    article(
-        id="chuanweishenmebuchen", title="為什麼船不會沉", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CHUAN_TEXT,
-        questions=_CHUAN_QUESTIONS,
-    ),
-    article(
-        id="kuaiziweishenmekanqilai", title="為什麼筷子在水裡看起來是彎的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_KUAIZI_TEXT,
-        questions=_KUAIZI_QUESTIONS,
-    ),
-    article(
-        id="jingziweishenmehuifanshe", title="為什麼鏡子會反射", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JINGZI_TEXT,
-        questions=_JINGZI_QUESTIONS,
-    ),
-    article(
-        id="fangdajingweishenmeneng", title="為什麼放大鏡能聚光", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_FANGDAJING_TEXT,
-        questions=_FANGDAJING_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuijingdian", title="為什麼會有靜電", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JINGDIAN_TEXT,
-        questions=_JINGDIAN_QUESTIONS,
-    ),
-    article(
-        id="citieweishenmenengxi", title="為什麼磁鐵能吸鐵", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_CITIE_TEXT,
-        questions=_CITIE_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuimoca", title="為什麼會有摩擦力", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_MOCA_TEXT,
-        questions=_MOCA_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiguanxing", title="為什麼會有慣性", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GUANXING_TEXT,
-        questions=_GUANXING_QUESTIONS,
-    ),
-    article(
-        id="weishenmeyinyuegaodi", title="為什麼會有聲音高低", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YINYUE_TEXT,
-        questions=_YINYUE_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuigongming", title="為什麼會有共鳴", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GONGMING_TEXT,
-        questions=_GONGMING_QUESTIONS,
-    ),
-    article(
-        id="baowenping", title="為什麼保溫瓶能保溫", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BAOWENPING_TEXT,
-        questions=_BAOWENPING_QUESTIONS,
-    ),
-    article(
-        id="weishenmebingfuzai", title="為什麼冰會浮在水上", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BIRU_TEXT,
-        questions=_BIRU_QUESTIONS,
-    ),
-    article(
-        id="biaomianzhangli", title="為什麼會有表面張力", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_BIAOMIAN_TEXT,
-        questions=_BIAOMIAN_QUESTIONS,
-    ),
-    article(
-        id="qiqiuweishenmehuifei", title="為什麼氣球會飛", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_QIQIU_TEXT,
-        questions=_QIQIU_QUESTIONS,
-    ),
-    # 化學
-    article(
-        id="yanweishenmehuirongjie", title="為什麼鹽會溶解", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YAN_TEXT,
-        questions=_YAN_QUESTIONS,
-    ),
-    article(
-        id="xiaosudajiacu", title="為什麼小蘇打加醋會冒泡", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XIAOSUDA_TEXT,
-        questions=_XIAOSUDA_QUESTIONS,
-    ),
-    article(
-        id="pingguo", title="為什麼蘋果切開會變色", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_PINGGUO_TEXT,
-        questions=_PINGGUO_QUESTIONS,
-    ),
-    article(
-        id="jidan", title="為什麼蛋煮熟會變硬", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JIDAN_TEXT,
-        questions=_JIDAN_QUESTIONS,
-    ),
-    article(
-        id="lazhu", title="為什麼蠟燭會熄滅", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LAZHU_TEXT,
-        questions=_LAZHU_QUESTIONS,
-    ),
-    article(
-        id="miehuoqi", title="為什麼滅火器能滅火", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_MIEHUOQI_TEXT,
-        questions=_MIEHUOQI_QUESTIONS,
-    ),
-    article(
-        id="tonglv", title="為什麼銅會變綠", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_TONGLV_TEXT,
-        questions=_TONGLV_QUESTIONS,
-    ),
-    # 地球與天氣
-    article(
-        id="weishenmehuiyou", title="為什麼會有颱風", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_TAIFENG_TEXT,
-        questions=_TAIFENG_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuilongjuanfeng", title="為什麼會有龍捲風", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LONGJUANFENG_TEXT,
-        questions=_LONGJUANFENG_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuixiaxue", title="為什麼會下雪", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XIAXUE_TEXT,
-        questions=_XIAXUE_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiyoulu", title="為什麼會有露水", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LU_TEXT,
-        questions=_LU_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiyouwu", title="為什麼會有霧", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_WU_TEXT,
-        questions=_WU_QUESTIONS,
-    ),
-    article(
-        id="xiyangweishenmehong", title="為什麼夕陽是紅的", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XIYANGHONG_TEXT,
-        questions=_XIYANGHONG_QUESTIONS,
-    ),
-    article(
-        id="gaoshanweishenmeleng", title="為什麼高山上比較冷", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_GAOSHAN_LENG_TEXT,
-        questions=_GAOSHAN_LENG_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuirishi", title="為什麼會有日食", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_RISHI_TEXT,
-        questions=_RISHI_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiyueshi", title="為什麼會有月食", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_YUESHI_TEXT,
-        questions=_YUESHI_QUESTIONS,
-    ),
-    article(
-        id="xingxingweishenmehui", title="為什麼星星會閃", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_XINGXING_TEXT,
-        questions=_XINGXING_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiliuxing", title="為什麼會有流星", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_LIUXING_TEXT,
-        questions=_LIUXING_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuiyoujiguang", title="為什麼會有極光", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_JIGUANG_TEXT,
-        questions=_JIGUANG_QUESTIONS,
-    ),
-    article(
-        id="weishenmehuihuoshan", title="為什麼會有火山", author="（自然科普習作）",
-        genre="說明文", category=CATEGORY, text=_HUOSHAN_TEXT,
-        questions=_HUOSHAN_QUESTIONS,
-    ),
-article(id="dianbingxiang", title="冰箱為什麼能保冷", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_DIANBINGXIANG_TEXT, questions=_DIANBINGXIANG_QUESTIONS),
-article(id="dianfengshan", title="電風扇為什麼會涼", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_DIANFENGSHAN_TEXT, questions=_DIANFENGSHAN_QUESTIONS),
-article(id="weibolu", title="微波爐為什麼能加熱", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_WEIBOLU_TEXT, questions=_WEIBOLU_QUESTIONS),
-article(id="xiyiji", title="洗衣機為什麼能洗淨衣服", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_XIYIJI_TEXT, questions=_XIYIJI_QUESTIONS),
-article(id="lengqi", title="冷氣機為什麼會滴水", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_LENGQI_TEXT, questions=_LENGQI_QUESTIONS),
-article(id="xishou", title="為什麼要洗手", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_XISHOU_TEXT, questions=_XISHOU_QUESTIONS),
-article(id="baocunshiwu", title="為什麼食物要保存", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_BAOCUN_SHIWU_TEXT, questions=_BAOCUN_SHIWU_QUESTIONS),
-article(id="ziyin", title="為什麼自來水要煮沸", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_ZIYIN_TEXT, questions=_ZIYIN_TEXT_QUESTIONS),
-article(id="yundong", title="為什麼運動要暖身", author="（生活科普習作）",
-genre="說明文", category=CATEGORY, text=_YUNDONG_TEXT, questions=_YUNDONG_QUESTIONS),
-article(id="lajifenlei", title="為什麼要垃圾分類", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_LAJIFENLEI_TEXT, questions=_LAJIFENLEI_QUESTIONS),
-article(id="jiefu", title="為什麼會有節慶", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_JIEFU_TEXT, questions=_JIEFU_QUESTIONS),
-article(id="jiaotong", title="為什麼要有交通號誌", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_JIAOTONG_TEXT, questions=_JIAOTONG_QUESTIONS),
-article(id="paidui", title="為什麼要排隊", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_PAIDUI_TEXT, questions=_PAIDUI_QUESTIONS),
-article(id="erweima", title="QR碼怎麼運作", author="（科技科普習作）",
-genre="說明文", category=CATEGORY, text=_ERWEIMA_TEXT, questions=_ERWEIMA_QUESTIONS),
-article(id="wanglu", title="網路怎麼傳訊息", author="（科技科普習作）",
-genre="說明文", category=CATEGORY, text=_WANGLU_TEXT, questions=_WANGLU_QUESTIONS),
-article(id="shouji_dingwei", title="手機怎麼定位", author="（科技科普習作）",
-genre="說明文", category=CATEGORY, text=_SHOUJI_DINGWEI_TEXT, questions=_SHOUJI_DINGWEI_QUESTIONS),
-article(id="jiaxinxi", title="如何分辨假訊息", author="（科技科普習作）",
-genre="說明文", category=CATEGORY, text=_JIAXINXI_TEXT, questions=_JIAXINXI_QUESTIONS),
-article(id="falv", title="為什麼要有法律", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_FALV_TEXT, questions=_FALV_QUESTIONS),
-article(id="minzhu", title="什麼是民主制度", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_MINZHU_TEXT, questions=_MINZHU_QUESTIONS),
-article(id="jiaoyu", title="什麼是教育制度", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_JIAOYU_TEXT, questions=_JIAOYU_QUESTIONS),
-article(id="keji", title="訊息傳遞的演變", author="（社會科普習作）",
-genre="說明文", category=CATEGORY, text=_KEJI_TEXT, questions=_KEJI_QUESTIONS),
+    Article(
+        id="fanqie",
+        title="番茄紅了，醫生的臉就綠了",
+        author="（自然科普習作）",
+        genre="說明文",
+        category=CATEGORY,
+        text=_FANQIE_TEXT,
+        questions=(
+            q(
+                1,
+                "細節理解",
+                "諺語「番茄紅了，醫生的臉就綠了」是什麼意思？",
+                (
+                    "用幽默誇張的方式表示番茄很有營養讓人少生病，醫生就沒生意了",
+                    "醫生非常討厭吃紅色的番茄",
+                    "吃番茄會讓人臉色發綠",
+                    "番茄有毒會讓醫生生病",
+                ),
+                hint="想想看「臉綠」在這裡說的是臉色，還是生意？",
+                explanation=(
+                    "「綠了」不是真的臉變綠色，而是指醫生生意變差。這句話用誇張又幽默的說法，"
+                    "告訴我們番茄的營養價值很高，吃的人少了生病，醫生自然就少生意了。"
+                ),
+                gist="番茄很有營養，醫生沒生意",
+            ),
+            q(
+                2,
+                "細節理解",
+                "番茄呈現漂亮的紅色，主要是因為含有什麼營養成分？",
+                ("茄紅素", "花青素", "胡蘿蔔素", "葉黃素"),
+                hint="文章裡就寫了那個成分的名字。",
+                explanation=(
+                    "文章直接說番茄的紅色是因為含有「茄紅素」。花青素讓葡萄變紫、胡蘿蔔素讓胡蘿蔔變橘色，"
+                    "都不是番茄的顏色來源。"
+                ),
+                gist="茄紅素",
+            ),
+            q(
+                3,
+                "細節理解",
+                "茄紅素在我們身體裡扮演什麼重要的角色？",
+                (
+                    "抗氧化，保護心血管健康",
+                    "幫大腦快速記住考試答案",
+                    "增加骨頭的重量",
+                    "替代睡眠提供能量",
+                ),
+                hint="「清除體內的壞物質」換個說法會是什麼？",
+                explanation=(
+                    "文章說茄紅素是「很強的抗氧化劑」，能清除體內的壞物質、保護心血管健康。"
+                    "清除體內的壞物質，就是「抗氧化」。"
+                ),
+                gist="抗氧化，保護心血管",
+            ),
+            q(
+                4,
+                "推論分析",
+                "為什麼番茄煮熟並且加油炒過之後，人體吸收率會更好？",
+                (
+                    "加熱能破壞細胞壁，而且茄紅素需要油脂幫忙吸收",
+                    "生番茄有毒不能直接吃",
+                    "油脂可以改變番茄的顏色",
+                    "加熱會產生新的維生素",
+                ),
+                hint="茄紅素躲在兩個地方，要各用一招對付。",
+                explanation=(
+                    "茄紅素有兩個麻煩：它躲在番茄的「細胞壁」裡面，而且它是「脂溶性」的。"
+                    "所以要用加熱破壞細胞壁把它放出來，再用油脂幫助身體吸收。兩招都做，吸收率才會更好。"
+                ),
+                gist="加熱破細胞壁，油脂幫吸收",
+            ),
+            q(
+                5,
+                "推論分析",
+                "番茄的營養吸收方式和一般常見的水果蔬菜有什麼不同？",
+                (
+                    "一般蔬果多建議生吃，番茄則是煮熟加油吸收更好",
+                    "番茄只能打成果汁喝",
+                    "番茄絕對不能碰任何油脂",
+                    "番茄一定要削皮才能吃",
+                ),
+                hint="文章用了「但番茄卻剛好相反」。",
+                explanation=(
+                    "文章說一般蔬果大多建議生吃才不會破壞營養，「但番茄卻剛好相反」，反而煮熟加油比較好。"
+                    "這種把兩者放在一起對照的寫法，就叫「比較」。"
+                ),
+                gist="一般生吃，番茄煮熟加油",
+            ),
+            q(
+                6,
+                "推論分析",
+                "除了茄紅素之外，文章提到番茄還含有哪些營養素？",
+                ("維生素C與膳食纖維", "很多蛋白質與肥肉", "咖啡因", "大量的鈣質"),
+                hint="唸出文章最後一段的列舉。",
+                explanation=(
+                    "文章最後一段寫「除了茄紅素，番茄還含有維生素C和膳食纖維」，這兩樣都能幫助消化。"
+                    "咖啡因是咖啡裡的成分，鈣質主要來自牛奶和骨頭。"
+                ),
+                gist="維生素C與膳食纖維",
+            ),
+            q(
+                7,
+                "推論分析",
+                "文中說茄紅素是「脂溶性」營養素，這是什麼意思？",
+                (
+                    "代表它能溶解在油脂中，需要油脂幫忙吸收",
+                    "代表它會讓身體產生很多脂肪",
+                    "代表它只存在於肥肉裡",
+                    "代表它很容易溶解在水裡",
+                ),
+                hint="「脂」就是「油」，「溶」就是溶得進去。",
+                explanation=(
+                    "「脂」就是油，「溶」就是溶得進去。所以「脂溶性」的意思是：它能溶在油脂裡，"
+                    "因此吃進油的時候才吸收得好。這也解釋了為什麼要加油炒。"
+                ),
+                gist="能溶在油脂中，需要油幫忙",
+            ),
+            q(
+                8,
+                "省思評鑑",
+                "下列哪一道料理最能完整發揮番茄茄紅素的營養價值？",
+                (
+                    "用橄欖油炒番茄炒蛋",
+                    "生番茄切片沾白糖吃",
+                    "水洗乾淨直接生吃小番茄",
+                    "冰鎮番茄汁",
+                ),
+                hint="想讓茄紅素吸收好，需要哪兩個條件？",
+                explanation=(
+                    "根據前面的原理，茄紅素吸收好需要「加熱」和「油脂」兩件事同時具備。"
+                    "炒蛋有火也有油；生吃和冰鎮都沒有經過加熱，所以都不合。"
+                ),
+                gist="用橄欖油炒番茄炒蛋",
+            ),
+            q(
+                9,
+                "省思評鑑",
+                "這篇文章是用什麼順序來介紹番茄的？",
+                (
+                    "有趣諺語引出主題 ➔ 介紹營養成分 ➔ 說明煮熟吸收原理 ➔ 總結好處",
+                    "介紹番茄的種植歷史",
+                    "批評現代人的壞習慣",
+                    "比較番茄和蘋果的價格",
+                ),
+                hint="照著文章從頭到尾看一遍順序。",
+                explanation=(
+                    "文章先用有趣的諺語引起注意，再說番茄含有茄紅素，接著解釋為什麼煮熟比較好，"
+                    "最後說番茄美味又健康。這就是說明文常見的「總—分—總」結構。"
+                ),
+                gist="諺語到成分、原理再到好處",
+            ),
+            q(
+                10,
+                "省思評鑑",
+                "這篇文章最主要的宣導目的是什麼？",
+                (
+                    "帶大家認識番茄的營養價值與最棒的吃法",
+                    "鼓勵大家長大後去當醫生",
+                    "叫大家不要再吃其他蔬菜了",
+                    "教大家如何在陽台種番茄",
+                ),
+                hint="文章有沒有教你種番茄？或是叫大家別吃蔬菜？",
+                explanation=(
+                    "文章從頭到尾都在說番茄有多營養，以及怎麼吃最好，所以宣導目的就是讓大家認識它的價值與吃法。"
+                    "其他選項都不是文章在做的事。"
+                ),
+                gist="認識番茄營養與最佳吃法",
+            ),
+        ),
+    ),
+    article(
+            id="shuyeqiutianhuang", title="樹葉為什麼在秋天變黃", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_SYY_TEXT,
+            questions=_SYY_QUESTIONS,
+        ),
+    article(
+            id="mayibuzhilu", title="螞蟻為什麼不會迷路", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_MAYI_TEXT,
+            questions=_MAYI_QUESTIONS,
+        ),
+    article(
+            id="mifenghuami", title="蜜蜂怎麼找到花蜜", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_MIFENG_TEXT,
+            questions=_MIFENG_QUESTIONS,
+        ),
+    article(
+            id="tiankonglanse", title="為什麼天空是藍色的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_TIANKONG_TEXT,
+            questions=_TIANKONG_QUESTIONS,
+        ),
+    article(
+            id="yunzaishenmeyangcheng", title="雲是怎麼形成的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YUN_TEXT,
+            questions=_YUN_QUESTIONS,
+        ),
+    article(
+            id="leishengzenmelai", title="打雷是怎麼來的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LEIDIAN_TEXT,
+            questions=_LEIDIAN_QUESTIONS,
+        ),
+    article(
+            id="caihongzenmechuxian", title="彩虹是怎麼出現的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CAIHONG_TEXT,
+            questions=_CAIHONG_QUESTIONS,
+        ),
+    article(
+            id="haishuiweishenmexian", title="海水為什麼是鹹的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HAISHUI_TEXT,
+            questions=_HAISHUI_QUESTIONS,
+        ),
+    article(
+            id="zhongzizenmefaya", title="種子怎麼發芽", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_ZHONGZI_TEXT,
+            questions=_ZHONGZI_QUESTIONS,
+        ),
+    article(
+            id="baitianheiwanshang", title="為什麼有白天和晚上", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BAITIAN_TEXT,
+            questions=_BAITIAN_QUESTIONS,
+        ),
+    article(
+            id="yueliangbianxing", title="月亮為什麼會變形", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YUELIANG_TEXT,
+            questions=_YUELIANG_QUESTIONS,
+        ),
+    article(
+            id="weiyoushenmesiji", title="為什麼會有四季", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_SIJI_TEXT,
+            questions=_SIJI_QUESTIONS,
+        ),
+    article(
+            id="kedoubianqingwa", title="蝌蚪怎麼變成青蛙", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_KEDOU_TEXT,
+            questions=_KEDOU_QUESTIONS,
+        ),
+    article(
+            id="fengzenmelaide", title="風是怎麼來的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_FENG_TEXT,
+            questions=_FENG_QUESTIONS,
+        ),
+    article(
+            id="tieweishenmehuishengxiu", title="鐵為什麼會生鏽", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_TIEXIU_TEXT,
+            questions=_TIEXIU_QUESTIONS,
+        ),
+    article(
+            id="yingzizenmelaide", title="影子是怎麼來的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YINGZI_TEXT,
+            questions=_YINGZI_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuidizhen", title="為什麼會地震", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_DIZHEN_TEXT,
+            questions=_DIZHEN_QUESTIONS,
+        ),
+    article(
+            id="yushizenmelaide", title="雨是怎麼來的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YU_TEXT,
+            questions=_YU_QUESTIONS,
+        ),
+    article(
+            id="huiyizenmehuishi", title="回音是怎麼回事", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HUIYIN_TEXT,
+            questions=_HUIYIN_QUESTIONS,
+        ),
+    article(
+            id="chaoxizenmelaide", title="潮汐是怎麼來的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CHAOXI_TEXT,
+            questions=_CHAOXI_QUESTIONS,
+        ),
+    article(
+            id="feizaoweishenmenengxi", title="肥皂為什麼能去汙", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_FEIZAO_TEXT,
+            questions=_FEIZAO_QUESTIONS,
+        ),
+    article(
+            id="beijixiongweishenmebupaleng", title="北極熊為什麼不怕冷", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BEIJIXIONG_TEXT,
+            questions=_BEIJIXIONG_QUESTIONS,
+        ),
+    article(
+            id="gaoshanshangzhuomian", title="高山上為什麼煮不熟", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GAOSHAN_TEXT,
+            questions=_GAOSHAN_QUESTIONS,
+        ),
+    article(
+            id="zhiwuweishenmeyaoyangguang", title="為什麼植物需要陽光", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_ZHIWU_YANGGUANG_TEXT,
+            questions=_ZHIWU_YANGGUANG_QUESTIONS,
+        ),
+    article(
+            id="huaweishenmehuiyouse", title="為什麼花有各種顏色", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HUA_YANSE_TEXT,
+            questions=_HUA_YANSE_QUESTIONS,
+        ),
+    article(
+            id="huaweishenmehuixiang", title="為什麼花會有香味", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HUA_XIANG_TEXT,
+            questions=_HUA_XIANG_QUESTIONS,
+        ),
+    article(
+            id="guoshiweishenmehuichengshu", title="為什麼果實會成熟", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GUOSHI_TEXT,
+            questions=_GUOSHI_QUESTIONS,
+        ),
+    article(
+            id="xianrenzhangweishenmenengzai", title="為什麼仙人掌能在沙漠生存", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XIANRENZHANG_TEXT,
+            questions=_XIANRENZHANG_QUESTIONS,
+        ),
+    article(
+            id="hanxiucaoweishenmehuibihe", title="為什麼含羞草會閉合", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HANXIUCAO_TEXT,
+            questions=_HANXIUCAO_QUESTIONS,
+        ),
+    article(
+            id="shuweishenmehuiniance", title="為什麼樹會有年輪", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_NIANLUN_TEXT,
+            questions=_NIANLUN_QUESTIONS,
+        ),
+    article(
+            id="genweishenmexiangxiazhang", title="為什麼根向下長", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GEN_XIANGXIA_TEXT,
+            questions=_GEN_XIANGXIA_QUESTIONS,
+        ),
+    article(
+            id="zhiwuweishenmehuixiangguang", title="為什麼植物會向光生長", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XIANGGUANG_TEXT,
+            questions=_XIANGGUANG_QUESTIONS,
+        ),
+    article(
+            id="zhongziweishenmeyaoshuijiao", title="為什麼種子要休眠", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_ZHONGZI_SHUIJIAO_TEXT,
+            questions=_ZHONGZI_SHUIJIAO_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuidaqianpen", title="為什麼會打噴嚏", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_DAQIANPEN_TEXT,
+            questions=_DAQIANPEN_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiliuhan", title="為什麼會流汗", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LIUHAN_TEXT,
+            questions=_LIUHAN_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiqijipigeda", title="為什麼會起雞皮疙瘩", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JIQIPIGEDA_TEXT,
+            questions=_JIQIPIGEDA_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuidahaqian", title="為什麼會打哈欠", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_DAHAQIAN_TEXT,
+            questions=_DAHAQIAN_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuikouke", title="為什麼會口渴", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_KOUKE_TEXT,
+            questions=_KOUKE_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuijiezhi", title="為什麼傷口會結痂", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JIEZHI_TEXT,
+            questions=_JIEZHI_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuifashao", title="為什麼會發燒", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_FASHAO_TEXT,
+            questions=_FASHAO_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuijinshi", title="為什麼會近視", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JINSHI_TEXT,
+            questions=_JINSHI_QUESTIONS,
+        ),
+    article(
+            id="weishenmezhijiahuizhang", title="為什麼指甲會長長", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_ZHIJIA_TEXT,
+            questions=_ZHIJIA_QUESTIONS,
+        ),
+    article(
+            id="weishenmetoufahuibianbai", title="為什麼頭髮會變白", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_TOUFA_TEXT,
+            questions=_TOUFA_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuizhuyai", title="為什麼會蛀牙", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_ZHUYAI_TEXT,
+            questions=_ZHUYAI_QUESTIONS,
+        ),
+    article(
+            id="weishenmexueyeshihongse", title="為什麼血是紅色的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XUEYE_TEXT,
+            questions=_XUEYE_QUESTIONS,
+        ),
+    article(
+            id="weishenmeyaoshuijiao", title="為什麼要睡覺", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_SHUIJIAO_TEXT,
+            questions=_SHUIJIAO_QUESTIONS,
+        ),
+    article(
+            id="weishenmexintiaohuijia", title="為什麼心跳會加快", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XINTIAO_TEXT,
+            questions=_XINTIAO_QUESTIONS,
+        ),
+    article(
+            id="houniaoweishenmezhi", title="為什麼候鳥知道方向", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HOUNIAO_TEXT,
+            questions=_HOUNIAO_QUESTIONS,
+        ),
+    article(
+            id="gouweishenmetieshe", title="為什麼狗會吐舌頭", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GOU_TIESHE_TEXT,
+            questions=_GOU_TIESHE_QUESTIONS,
+        ),
+    article(
+            id="maoweishenmehuihulu", title="為什麼貓會呼嚕", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_MAO_HULU_TEXT,
+            questions=_MAO_HULU_QUESTIONS,
+        ),
+    article(
+            id="yuweishenmenengzai", title="為什麼魚能在水裡呼吸", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YU_HUXI_TEXT,
+            questions=_YU_HUXI_QUESTIONS,
+        ),
+    article(
+            id="qieweishenmebupaleng", title="為什麼企鵝不怕冷", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_QIE_TEXT,
+            questions=_QIE_QUESTIONS,
+        ),
+    article(
+            id="luotuo", title="為什麼駱駝能忍受沙漠", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LUOTUO_TEXT,
+            questions=_LUOTUO_QUESTIONS,
+        ),
+    article(
+            id="yinghuochong", title="為什麼螢火蟲會發光", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YINGHUOCHONG_TEXT,
+            questions=_YINGHUOCHONG_QUESTIONS,
+        ),
+    article(
+            id="zhizhu", title="為什麼蜘蛛會結網", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_ZHIZHU_TEXT,
+            questions=_ZHIZHU_QUESTIONS,
+        ),
+    article(
+            id="can", title="為什麼蠶會吐絲", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CAN_TEXT,
+            questions=_CAN_QUESTIONS,
+        ),
+    article(
+            id="chan", title="為什麼蟬會叫", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CHAN_TEXT,
+            questions=_CHAN_QUESTIONS,
+        ),
+    article(
+            id="hudie", title="為什麼蝴蝶翅膀有花紋", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HUDIE_TEXT,
+            questions=_HUDIE_QUESTIONS,
+        ),
+    article(
+            id="woniu", title="為什麼蝸牛有殼", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_WONIU_TEXT,
+            questions=_WONIU_QUESTIONS,
+        ),
+    article(
+            id="bianfu", title="為什麼蝙蝠用聲音認路", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BIANFU_TEXT,
+            questions=_BIANFU_QUESTIONS,
+        ),
+    article(
+            id="daxiang", title="為什麼大象有長鼻子", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_DAXIANG_TEXT,
+            questions=_DAXIANG_QUESTIONS,
+        ),
+    article(
+            id="changjinglu", title="為什麼長頸鹿脖子長", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CHANGJINGLU_TEXT,
+            questions=_CHANGJINGLU_QUESTIONS,
+        ),
+    article(
+            id="jingyu", title="為什麼鯨魚要浮出水面", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JINGYU_TEXT,
+            questions=_JINGYU_QUESTIONS,
+        ),
+    article(
+            id="bianselong", title="為什麼變色龍會變色", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BIANSELONG_TEXT,
+            questions=_BIANSELONG_QUESTIONS,
+        ),
+    article(
+            id="weishenmedongxiwangxia", title="為什麼東西會往下掉", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_DONGXI_WANGXIA_TEXT,
+            questions=_DONGXI_WANGXIA_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuifuli", title="為什麼會有浮力", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_FULI_TEXT,
+            questions=_FULI_QUESTIONS,
+        ),
+    article(
+            id="chuanweishenmebuchen", title="為什麼船不會沉", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CHUAN_TEXT,
+            questions=_CHUAN_QUESTIONS,
+        ),
+    article(
+            id="kuaiziweishenmekanqilai", title="為什麼筷子在水裡看起來是彎的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_KUAIZI_TEXT,
+            questions=_KUAIZI_QUESTIONS,
+        ),
+    article(
+            id="jingziweishenmehuifanshe", title="為什麼鏡子會反射", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JINGZI_TEXT,
+            questions=_JINGZI_QUESTIONS,
+        ),
+    article(
+            id="fangdajingweishenmeneng", title="為什麼放大鏡能聚光", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_FANGDAJING_TEXT,
+            questions=_FANGDAJING_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuijingdian", title="為什麼會有靜電", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JINGDIAN_TEXT,
+            questions=_JINGDIAN_QUESTIONS,
+        ),
+    article(
+            id="citieweishenmenengxi", title="為什麼磁鐵能吸鐵", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_CITIE_TEXT,
+            questions=_CITIE_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuimoca", title="為什麼會有摩擦力", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_MOCA_TEXT,
+            questions=_MOCA_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiguanxing", title="為什麼會有慣性", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GUANXING_TEXT,
+            questions=_GUANXING_QUESTIONS,
+        ),
+    article(
+            id="weishenmeyinyuegaodi", title="為什麼會有聲音高低", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YINYUE_TEXT,
+            questions=_YINYUE_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuigongming", title="為什麼會有共鳴", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GONGMING_TEXT,
+            questions=_GONGMING_QUESTIONS,
+        ),
+    article(
+            id="baowenping", title="為什麼保溫瓶能保溫", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BAOWENPING_TEXT,
+            questions=_BAOWENPING_QUESTIONS,
+        ),
+    article(
+            id="weishenmebingfuzai", title="為什麼冰會浮在水上", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BIRU_TEXT,
+            questions=_BIRU_QUESTIONS,
+        ),
+    article(
+            id="biaomianzhangli", title="為什麼會有表面張力", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_BIAOMIAN_TEXT,
+            questions=_BIAOMIAN_QUESTIONS,
+        ),
+    article(
+            id="qiqiuweishenmehuifei", title="為什麼氣球會飛", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_QIQIU_TEXT,
+            questions=_QIQIU_QUESTIONS,
+        ),
+    article(
+            id="yanweishenmehuirongjie", title="為什麼鹽會溶解", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YAN_TEXT,
+            questions=_YAN_QUESTIONS,
+        ),
+    article(
+            id="xiaosudajiacu", title="為什麼小蘇打加醋會冒泡", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XIAOSUDA_TEXT,
+            questions=_XIAOSUDA_QUESTIONS,
+        ),
+    article(
+            id="pingguo", title="為什麼蘋果切開會變色", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_PINGGUO_TEXT,
+            questions=_PINGGUO_QUESTIONS,
+        ),
+    article(
+            id="jidan", title="為什麼蛋煮熟會變硬", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JIDAN_TEXT,
+            questions=_JIDAN_QUESTIONS,
+        ),
+    article(
+            id="lazhu", title="為什麼蠟燭會熄滅", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LAZHU_TEXT,
+            questions=_LAZHU_QUESTIONS,
+        ),
+    article(
+            id="miehuoqi", title="為什麼滅火器能滅火", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_MIEHUOQI_TEXT,
+            questions=_MIEHUOQI_QUESTIONS,
+        ),
+    article(
+            id="tonglv", title="為什麼銅會變綠", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_TONGLV_TEXT,
+            questions=_TONGLV_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiyou", title="為什麼會有颱風", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_TAIFENG_TEXT,
+            questions=_TAIFENG_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuilongjuanfeng", title="為什麼會有龍捲風", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LONGJUANFENG_TEXT,
+            questions=_LONGJUANFENG_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuixiaxue", title="為什麼會下雪", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XIAXUE_TEXT,
+            questions=_XIAXUE_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiyoulu", title="為什麼會有露水", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LU_TEXT,
+            questions=_LU_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiyouwu", title="為什麼會有霧", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_WU_TEXT,
+            questions=_WU_QUESTIONS,
+        ),
+    article(
+            id="xiyangweishenmehong", title="為什麼夕陽是紅的", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XIYANGHONG_TEXT,
+            questions=_XIYANGHONG_QUESTIONS,
+        ),
+    article(
+            id="gaoshanweishenmeleng", title="為什麼高山上比較冷", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_GAOSHAN_LENG_TEXT,
+            questions=_GAOSHAN_LENG_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuirishi", title="為什麼會有日食", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_RISHI_TEXT,
+            questions=_RISHI_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiyueshi", title="為什麼會有月食", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_YUESHI_TEXT,
+            questions=_YUESHI_QUESTIONS,
+        ),
+    article(
+            id="xingxingweishenmehui", title="為什麼星星會閃", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_XINGXING_TEXT,
+            questions=_XINGXING_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiliuxing", title="為什麼會有流星", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_LIUXING_TEXT,
+            questions=_LIUXING_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuiyoujiguang", title="為什麼會有極光", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_JIGUANG_TEXT,
+            questions=_JIGUANG_QUESTIONS,
+        ),
+    article(
+            id="weishenmehuihuoshan", title="為什麼會有火山", author="（自然科普習作）",
+            genre="說明文", category=CATEGORY, text=_HUOSHAN_TEXT,
+            questions=_HUOSHAN_QUESTIONS,
+        ),
+    article(id="dianbingxiang", title="冰箱為什麼能保冷", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_DIANBINGXIANG_TEXT, questions=_DIANBINGXIANG_QUESTIONS),
+    article(id="dianfengshan", title="電風扇為什麼會涼", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_DIANFENGSHAN_TEXT, questions=_DIANFENGSHAN_QUESTIONS),
+    article(id="weibolu", title="微波爐為什麼能加熱", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_WEIBOLU_TEXT, questions=_WEIBOLU_QUESTIONS),
+    article(id="xiyiji", title="洗衣機為什麼能洗淨衣服", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_XIYIJI_TEXT, questions=_XIYIJI_QUESTIONS),
+    article(id="lengqi", title="冷氣機為什麼會滴水", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_LENGQI_TEXT, questions=_LENGQI_QUESTIONS),
+    article(id="xishou", title="為什麼要洗手", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_XISHOU_TEXT, questions=_XISHOU_QUESTIONS),
+    article(id="baocunshiwu", title="為什麼食物要保存", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_BAOCUN_SHIWU_TEXT, questions=_BAOCUN_SHIWU_QUESTIONS),
+    article(id="ziyin", title="為什麼自來水要煮沸", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_ZIYIN_TEXT, questions=_ZIYIN_TEXT_QUESTIONS),
+    article(id="yundong", title="為什麼運動要暖身", author="（生活科普習作）",
+    genre="說明文", category=CATEGORY, text=_YUNDONG_TEXT, questions=_YUNDONG_QUESTIONS),
+    article(id="lajifenlei", title="為什麼要垃圾分類", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_LAJIFENLEI_TEXT, questions=_LAJIFENLEI_QUESTIONS),
+    article(id="jiefu", title="為什麼會有節慶", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_JIEFU_TEXT, questions=_JIEFU_QUESTIONS),
+    article(id="jiaotong", title="為什麼要有交通號誌", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_JIAOTONG_TEXT, questions=_JIAOTONG_QUESTIONS),
+    article(id="paidui", title="為什麼要排隊", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_PAIDUI_TEXT, questions=_PAIDUI_QUESTIONS),
+    article(id="erweima", title="QR碼怎麼運作", author="（科技科普習作）",
+    genre="說明文", category=CATEGORY, text=_ERWEIMA_TEXT, questions=_ERWEIMA_QUESTIONS),
+    article(id="wanglu", title="網路怎麼傳訊息", author="（科技科普習作）",
+    genre="說明文", category=CATEGORY, text=_WANGLU_TEXT, questions=_WANGLU_QUESTIONS),
+    article(id="shouji_dingwei", title="手機怎麼定位", author="（科技科普習作）",
+    genre="說明文", category=CATEGORY, text=_SHOUJI_DINGWEI_TEXT, questions=_SHOUJI_DINGWEI_QUESTIONS),
+    article(id="jiaxinxi", title="如何分辨假訊息", author="（科技科普習作）",
+    genre="說明文", category=CATEGORY, text=_JIAXINXI_TEXT, questions=_JIAXINXI_QUESTIONS),
+    article(id="falv", title="為什麼要有法律", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_FALV_TEXT, questions=_FALV_QUESTIONS),
+    article(id="minzhu", title="什麼是民主制度", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_MINZHU_TEXT, questions=_MINZHU_QUESTIONS),
+    article(id="jiaoyu", title="什麼是教育制度", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_JIAOYU_TEXT, questions=_JIAOYU_QUESTIONS),
+    article(id="keji", title="訊息傳遞的演變", author="（社會科普習作）",
+    genre="說明文", category=CATEGORY, text=_KEJI_TEXT, questions=_KEJI_QUESTIONS),
 )

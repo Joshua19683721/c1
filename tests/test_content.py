@@ -9,10 +9,9 @@ from src import content
 from src.categories import CATEGORIES, CATEGORY_ORDER
 
 
-#: The specification asks for 200 articles, 50 per category. The library is
-#: being filled in batch by batch, so tests assert the *structure* rather than
-#: a frozen count that would have to be edited on every batch.
-TARGET_ARTICLES = 50 * 8
+#: The library now covers ten categories at 100 articles each (1,000 slots);
+#: the cap keeps a stray batch from silently blowing past the plan.
+TARGET_ARTICLES = 100 * 10
 
 
 def test_library_is_filling_towards_the_target():

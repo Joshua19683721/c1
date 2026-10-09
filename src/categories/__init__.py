@@ -2,8 +2,8 @@
 """閱讀素養分類registry — 對應 108 課綱的領域與段能力。
 
 每個類別是一個 slug,對應 src/categories/ 底下的一個模組。
-文章寫在類別模組裡,不集中在 content.py —— 200 篇如果塞在同一個檔案,
-那會是一個沒有人敢動的 1.4 MB 檔案。
+文章寫在類別模組裡,不集中在 content.py —— 上千篇如果塞在同一個檔案,
+那會是一個沒有人敢動的巨型檔案。
 """
 
 from __future__ import annotations

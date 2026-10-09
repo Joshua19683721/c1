@@ -105,6 +105,9 @@ class Article:
     #: 1-based day of the year this article is scheduled for (1..365). Assigned
     #: from position within the category unless the module sets it explicitly.
     day: int = 0
+    #: Theme / subtheme the category files organise their articles under, e.g.
+    #: 成語故事 or 唐詩. Empty when the module does not declare one.
+    theme: str = ""
 
     @property
     def display_title(self) -> str:
@@ -153,6 +156,7 @@ def article(
     text: str,
     questions: Sequence[tuple[str, str, str, int, str, str, str]],
     category: str,
+    theme: str = "",
 ) -> Article:
     """Build an Article from the compact Q() form.
 
@@ -170,7 +174,7 @@ def article(
     )
     return Article(
         id=id, title=title, author=author, genre=genre, text=text,
-        questions=built, category=category,
+        questions=built, category=category, theme=theme,
     )
 
 def q(
