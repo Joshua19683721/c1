@@ -43,6 +43,12 @@ CATEGORIES: dict[str, Category] = {
             blurb="古文、詩詞與成語故事。訓練字詞理解與古今語意對照。",
         ),
         Category(
+            slug="myth_biography",
+            label="神話與傳記",
+            icon="\U0001F409",
+            blurb="神話與人物傳記。訓練讀出先民的想像，以及傳記中的時間與轉折。",
+        ),
+        Category(
             slug="poetry",
             label="現代詩",
             icon="\U0001F33B",
@@ -67,6 +73,12 @@ CATEGORIES: dict[str, Category] = {
             blurb="人如何和世界相處。訓練分辨論點、找出價值立場。",
         ),
         Category(
+            slug="argument_application",
+            label="議論與應用",
+            icon="\u2696\ufe0f",
+            blurb="議論文與應用文。訓練分辨論點與論據，並讀懂書信、啟事、說明書的格式。",
+        ),
+        Category(
             slug="fable",
             label="寓言與童話",
             icon="\U0001F9D9",
@@ -80,10 +92,12 @@ CATEGORY_ORDER: tuple[str, ...] = (
     "narrative",
     "expository",
     "classical",
+    "myth_biography",
     "poetry",
     "fiction",
     "taiwan",
     "society",
+    "argument_application",
     "fable",
 )
 
